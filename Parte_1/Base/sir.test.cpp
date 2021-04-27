@@ -2,7 +2,8 @@
 #include "doctest.h"
 #include "sir.hpp"
 
-TEST_CASE("Testing Struct Data") {
+TEST_CASE("Testing Struct Data")
+{
   Data data;
   CHECK(data.S == 0);
   CHECK(data.I == 0);
@@ -13,7 +14,8 @@ TEST_CASE("Testing Struct Data") {
   CHECK(data_1.R == 3);
 }
 
-TEST_CASE("Testing Class Population") {
+TEST_CASE("Testing Class Population")
+{
   Data data{1, 2, 3};
   Population population{0.1, .2, data};
   CHECK(population.I() == 2);

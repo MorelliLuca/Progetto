@@ -1,6 +1,10 @@
 #ifndef SIR_HPP
 #define SIR_HPP
 
+#include <cassert>
+
+namespace Simulation {
+
 struct Data
 {
   int S{0};
@@ -18,6 +22,16 @@ class Population
   Population(double b, double g, Data initial_state)
       : state{initial_state}, beta{b}, gamma{g}
   {
+    assert(state.I >= 0);
+    assert(state.R >= 0);
+    assert(state.S >= 0);
+  }
+
+  Population(double b, double g) : beta{b}, gamma{g}
+  {
+    assert(state.I >= 0);
+    assert(state.R >= 0);
+    assert(state.S >= 0);
   }
 
   // Funzioni membro per accedere ai dati privati
@@ -32,5 +46,9 @@ class Population
   double const& Beta() const { return beta; }
   double const& Gamma() const { return gamma; }
 };
+
+Population const Evolve(Population const& initial_population);
+
+}  // namespace Simulation
 
 #endif

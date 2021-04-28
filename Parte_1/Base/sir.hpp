@@ -2,6 +2,7 @@
 #define SIR_HPP
 
 #include <cassert>
+#include <vector>
 
 namespace Simulation {
 
@@ -19,19 +20,19 @@ class Population
   double gamma;
 
  public:
-  Population(double b, double g, Data initial_state)
-      : state{initial_state}, beta{b}, gamma{g}
+  Population(double b, double g, Data initial_state) : state{initial_state}, beta{b}, gamma{g}
   {
     assert(state.I >= 0);
     assert(state.R >= 0);
     assert(state.S >= 0);
+    assert(beta >= 0);
+    assert(gamma >= 0);
   }
 
   Population(double b, double g) : beta{b}, gamma{g}
   {
-    assert(state.I >= 0);
-    assert(state.R >= 0);
-    assert(state.S >= 0);
+    assert(beta >= 0);
+    assert(gamma >= 0);
   }
 
   // Funzioni membro per accedere ai dati privati
@@ -48,7 +49,8 @@ class Population
 };
 
 Population const Evolve(Population const& initial_population);
-
+std::vector<Population> Simulate(int T_duration, Population const& initial_population);
+void Print(std::vector<Population> const& simulated);
 }  // namespace Simulation
 
 #endif

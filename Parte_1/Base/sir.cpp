@@ -49,9 +49,10 @@ Population const Evolve(Population const& initial_population)
 std::vector<Population> Simulate(int T_duration, Population const& initial_population)
 {
   std::vector<Population> result{initial_population};
+  result.reserve(T_duration+1);
   for (int i{0}; i < T_duration; ++i) {
-    if (result[i].I() * result[i].Gamma() <= .5 || result[i].Beta() * result[i].S() / result[i].Total() * result[i].I() <= 0.5) {
-      std::cerr << "Simulation terminated at day " << i << " for statistical limit\n";
+    if (result[i].I() * result[i].Gamma() <= .5 && result[i].Beta() * result[i].S() / result[i].Total() * result[i].I() <= 0.5) {
+      std::cerr << "Simulation terminated for statistical limit\nEpidemy can be considered ended at day " << i << "\n";
       break;
     }
     if (result[i].I() == 0) {
@@ -65,13 +66,13 @@ std::vector<Population> Simulate(int T_duration, Population const& initial_popul
 void Print(std::vector<Population> const& simulated)
 {
   std::cout << "-----------------------------------------------------------\n"
-            << "Simulation        Days: " << simulated.size() << std::setw(18) << "        N: " << simulated[0].Total()
+            << "Simulation        Days: " << simulated.size()-1 << std::setw(18) << "        N: " << simulated[0].Total()
             << "\n"
                "-----------------------------------------------------------\n"
                "|  Day  |    S    |    I    |    R    |  Beta  |  Gamma  |\n";
-  for (int i{0}; i - simulated.size() != 0; ++i) {
-    std::cout << "| " << std::setw(5) << i << " | " << std::setw(7) << simulated[i].S() << " | " << std::setw(7) << simulated[i].I() << " | "
-              << std::setw(7) << simulated[i].R() << " | " << std::setw(6) << simulated[i].Beta() << " | " << std::setw(7) << simulated[i].Gamma()
+  for (auto it = simulated.begin(); it!=simulated.end(); ++it) {
+    std::cout << "| " << std::setw(5) << std::distance(simulated.begin(),it) << " | " << std::setw(7) << it->S() << " | " << std::setw(7) << it->I() << " | "
+              << std::setw(7) << it->R() << " | " << std::setw(6) << it->Beta() << " | " << std::setw(7) << it->Gamma()
               << " |\n";
   }
 }

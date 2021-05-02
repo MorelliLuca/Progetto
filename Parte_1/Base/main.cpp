@@ -12,7 +12,10 @@ Simulation::Population get_parameter()
   if (initial_state.S < 0 || initial_state.I < 0 || initial_state.R < 0 || beta < 0 || gamma < 0) {
     throw std::invalid_argument{"These parameters can't be less than 0"};
   }
-  
+  if (beta>1||gamma>1)
+  {
+    throw std::invalid_argument{"Beta and gamma can't be more than 1"};
+  }
   if (std::cin.fail()) {
     throw std::invalid_argument{"These parameters have to be numbers"};
   }

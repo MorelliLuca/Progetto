@@ -41,15 +41,17 @@ public:
     int cursor = r * side + c;
     return grid[cursor];
   }
-  int size() const { return side; }
+  int get_side() const { return side; }
+  double const get_beta() const {return beta;}
+  double const get_gamma() const {return gamma;}
   
   
 };
 
 inline bool operator==(World const &left, World const &right) {
   bool result;
-  for (int i{0}; i < left.size(); ++i) {
-    for (int j{0}; j < left.size(); ++j) {
+  for (int i{0}; i < left.get_side(); ++i) {
+    for (int j{0}; j < left.get_side(); ++j) {
       result = left.person(i, j) == right.person(i, j);
       if (result == false) {
         break;
@@ -65,6 +67,12 @@ inline bool operator==(World const &left, World const &right) {
 inline bool operator!=(World const &left, World const &right) {
   return !(left == right);
 }
+
+inline int I_near(World const& world, int r, int c);
+
+inline Person check_next_status (World const& world, int r, int c);
+
+inline World evolve (World const& current_world);
 
 }
 

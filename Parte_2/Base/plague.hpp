@@ -42,8 +42,8 @@ public:
     return grid[cursor];
   }
   int get_side() const { return side; }
-  double const get_beta() const {return beta;}
-  double const get_gamma() const {return gamma;}
+  double const& get_beta() const {return beta;}
+  double const& get_gamma() const {return gamma;}
   
   
 };
@@ -54,11 +54,8 @@ inline bool operator==(World const &left, World const &right) {
     for (int j{0}; j < left.get_side(); ++j) {
       result = left.person(i, j) == right.person(i, j);
       if (result == false) {
-        break;
+        return result;
       }
-    }
-    if (result == false) {
-      break;
     }
   }
   return result;
@@ -72,7 +69,7 @@ inline int I_near(World const& world, int r, int c);
 
 inline Person check_next_status (World const& world, int r, int c);
 
-inline World evolve (World const& current_world);
+World evolve (World const& current_world);
 
 }
 

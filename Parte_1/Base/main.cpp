@@ -1,8 +1,10 @@
 #include <iostream>
+#include <limits>
 #include <stdexcept>
 #include <vector>
+#include "SFML/Graphics.hpp"
 #include "sir.hpp"
-#include <limits>
+#include "graph.hpp"
 
 Simulation::Population get_parameter()
 {  // Funzione che prende in input i parametri iniziali della simulazione
@@ -12,16 +14,11 @@ Simulation::Population get_parameter()
   if (initial_state.S < 0 || initial_state.I < 0 || initial_state.R < 0 || beta < 0 || gamma < 0) {
     throw std::invalid_argument{"These parameters can't be less than 0"};
   }
-  if (beta>1||gamma>1)
-  {
-    throw std::invalid_argument{"Beta and gamma can't be more than 1"};
-  }
-  if (std::cin.fail()) {
-    throw std::invalid_argument{"These parameters have to be numbers"};
-  }
+  if (beta > 1 || gamma > 1) { throw std::invalid_argument{"Beta and gamma can't be more than 1"}; }
+  if (std::cin.fail()) { throw std::invalid_argument{"These parameters have to be numbers"}; }
   if (initial_state.S == 0 && initial_state.I == 0 && initial_state.R == 0) { throw std::invalid_argument{"These parameters can't all be 0"}; }
-Simulation::Population population{beta, gamma, initial_state};
-return population;
+  Simulation::Population population{beta, gamma, initial_state};
+  return population;
 }
 
 int main()
@@ -32,22 +29,34 @@ int main()
       int simulation_t;
       std::cin >> simulation_t;
       if (simulation_t <= 0) { throw std::invalid_argument{"Time has to be more than 0"}; }
-      if (std::cin.fail()) {
-        throw std::invalid_argument{"These parameters have to be numbers"};
-        
-      }
+      if (std::cin.fail()) { throw std::invalid_argument{"These parameters have to be numbers"}; }
 
       std::vector<Simulation::Population> population{Simulation::Simulate(simulation_t, initial_population)};
       Simulation::Print(population);
+      // Graphing
+      sf::RenderWindow w_graph(sf::VideoMode(400, 400), "SIR Graph");
+      w_graph.clear(sf::Color::White);
+      while (w_graph.isOpen()) {
+        Display::print_I(w_graph, population);
+        Display::print_R(w_graph, population);
+        Display::print_S(w_graph, population);
+        Display::print_axis(w_graph, population);
+        sf::Event event;
+        while (w_graph.waitEvent(event)) {
+          if (event.type == sf::Event::Closed) w_graph.close();
+        }
+      }
       break;
     } catch (std::invalid_argument const& e) {
-      std::cerr <<"\033[31mInavalid input:\033[0m "<< e.what() <<'\n';
+      std::cerr << "\033[31mInavalid input:\033[0m " << e.what() << '\n';
       std::cin.clear();
       std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      break;
     } catch (...) {
       std::cerr << "Caught unknown exception" << '\n';
       return EXIT_FAILURE;
     }
   }
+
   return 0;
 }

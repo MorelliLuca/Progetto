@@ -30,3 +30,22 @@
 *.exe
 *.out
 *.app
+
+
+# Text files
+*.txt 
+
+#Cmake
+
+*.cmake 
+*.make 
+*.internal
+*.includecache
+*.bin
+*.check_cache
+*.log 
+Makefile
+Makefile2
+*.marks
+CMakeCCompilerId.c
+CMakeCXXCompilerId.cpp

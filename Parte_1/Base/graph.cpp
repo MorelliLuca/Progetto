@@ -63,13 +63,28 @@ void print_axis(sf::RenderWindow& window, std::vector<Simulation::Population> co
    label.setCharacterSize(10);
    label.setFillColor(sf::Color::Black);
    line.setFillColor(sf::Color::Black);
-   for(int i{0};i<=10;++i){
+   label.setString("N");
+   window.draw(label);
+   for(int i{1};i<10;++i){
     line.setPosition(sf::Vector2f(0,i*window.getSize().y/10));
     window.draw(line);
     label.setString(std::to_string(data_vector[0].Total()/10*(10-i)));
     label.setPosition(sf::Vector2f(10,i*window.getSize().y/10-5));
     window.draw(label);
    }
+   label.setString("0");
+   label.setPosition(sf::Vector2f(0,window.getSize().y-10));
+    window.draw(label);
+    line.rotate(90);
+
+
+   for(int i{1};i<10;++i){
+    line.setPosition(sf::Vector2f(i*window.getSize().x/10,window.getSize().y-10));
+    window.draw(line);
+    label.setString(std::to_string(data_vector.size()/10*i));
+    label.setPosition(sf::Vector2f(i*window.getSize().x/10,window.getSize().y-10));
+    window.draw(label);
+   } 
    window.display();
 }
 }  // namespace Display

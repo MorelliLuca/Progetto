@@ -86,6 +86,6 @@ TEST_CASE("Testing Simulate Function")
   CHECK(simulated[0].I() == initial_population.I());
   CHECK(simulated[0].R() == initial_population.R());
   CHECK(simulated[10].S() == 3900);
-  CHECK(simulated[10].I() == 10191);
+  CHECK(simulated[10].I() == 10190);
   CHECK(simulated[10].R() == 1910);
 }

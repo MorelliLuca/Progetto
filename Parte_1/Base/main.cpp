@@ -3,8 +3,8 @@
 #include <stdexcept>
 #include <vector>
 #include "SFML/Graphics.hpp"
-#include "sir.hpp"
 #include "graph.hpp"
+#include "sir.hpp"
 
 Simulation::Population get_parameter()
 {  // Funzione che prende in input i parametri iniziali della simulazione
@@ -36,21 +36,21 @@ int main()
       // Graphing
       sf::RenderWindow w_graph(sf::VideoMode(400, 400), "SIR Graph");
       w_graph.clear(sf::Color::White);
-      while (w_graph.isOpen()) {
-        Display::print_R(w_graph, population);
+       Display::print_R(w_graph, population);
         Display::print_S(w_graph, population);
-         Display::print_I(w_graph, population);
+        Display::print_I(w_graph, population);
         Display::print_axis(w_graph, population);
-        sf::Event event;
+      while (w_graph.isOpen()) {
+       sf::Event event;
         while (w_graph.waitEvent(event)) {
           if (event.type == sf::Event::Closed) w_graph.close();
-          if (event.type == sf::Event::Resized){
-        w_graph.clear(sf::Color::White);
-        Display::print_R(w_graph, population);
-        Display::print_S(w_graph, population);
-         Display::print_I(w_graph, population);
-        Display::print_axis(w_graph, population);
-        break;
+          if (event.type == sf::Event::Resized) {
+            w_graph.clear(sf::Color::White);
+            Display::print_R(w_graph, population);
+            Display::print_S(w_graph, population);
+            Display::print_I(w_graph, population);
+            Display::print_axis(w_graph, population);
+            break;
           }
         }
       }
@@ -61,9 +61,8 @@ int main()
       std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
       break;
     } catch (std::runtime_error const& e) {
-       std::cerr << "\033[31mError:\033[0m " << e.what() << '\n';
-    }
-     catch (...) {
+      std::cerr << "\033[31mError:\033[0m " << e.what() << '\n';
+    } catch (...) {
       std::cerr << "Caught unknown exception" << '\n';
       return EXIT_FAILURE;
     }

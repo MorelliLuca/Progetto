@@ -27,7 +27,7 @@ inline Person check_next_status(World const& world, int r, int c)
   int const near_I{I_near(world, r, c)};
   switch (person) {
     case Person::S:
-      if (near_I!=0&&dis(gen) <= (beta + (beta/8.) * near_I)) { return Person::I; }
+      if (near_I != 0 && dis(gen) <= (beta + (beta / 8.) * near_I)) { return Person::I; }
       break;
     case Person::I:
       if (dis(gen) <= gamma) { return Person::R; }

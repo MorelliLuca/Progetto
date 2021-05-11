@@ -53,9 +53,9 @@ int main()
       std::cerr << "\033[31mInavalid input:\033[0m " << e.what() << '\n';
       std::cin.clear();
       std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-      break;
     } catch (std::runtime_error const& e) {
       std::cerr << "\033[31mError:\033[0m " << e.what() << '\n';
+      return EXIT_FAILURE;
     } catch (...) {
       std::cerr << "Caught unknown exception" << '\n';
       return EXIT_FAILURE;

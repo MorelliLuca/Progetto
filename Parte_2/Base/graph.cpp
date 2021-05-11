@@ -6,13 +6,16 @@
 #include "plague.hpp"
 
 namespace Display {
+  constexpr double Origin{0};
+  constexpr int Grid_line_width{1};
+  constexpr int Sleep_time{100};
 double person_size(sf::RenderWindow const& window, Simulation::World const& world) { return window.getSize().x / world.get_side(); }
 
 void print(sf::RenderWindow& window, Simulation::World const& world)
 {
   double person_s = person_size(window, world);
   window.clear(sf::Color::White);
-  sf::RectangleShape square(sf::Vector2f(person_s - 1, person_s - 1));
+  sf::RectangleShape square(sf::Vector2f(person_s - Grid_line_width, person_s - Grid_line_width));
   for (int r{0}; r < world.get_side(); ++r) {
     for (int c{0}; c < world.get_side(); ++c) {
       square.setPosition(r * (person_s), c * (person_s));
@@ -33,7 +36,7 @@ void setStatus(sf::RenderWindow& window, Simulation::World& world)
 {
   double person_s = person_size(window, world);
   sf::Vector2i local_position = sf::Mouse::getPosition(window);
-  bool good_position = (local_position.x < world.get_side() && local_position.x >= 0 && local_position.y < world.get_side() && local_position.y >= 0);
+  bool good_position = (window.getSize().x-local_position.x>Origin && local_position.x >= Origin && window.getSize().y-local_position.y>Origin && local_position.y >= Origin);
   if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && good_position) {
     int r = static_cast<int>(local_position.x / person_s);
     int c = static_cast<int>(local_position.y / person_s);
@@ -45,7 +48,7 @@ void setStatus(sf::RenderWindow& window, Simulation::World& world)
     } else if (world.person(r, c) == Simulation::Person::R) {
       world.person(r, c) = Simulation::Person::S;
     }
-    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    std::this_thread::sleep_for(std::chrono::milliseconds(Sleep_time));
   }
 }
 

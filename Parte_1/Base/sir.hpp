@@ -12,6 +12,7 @@ struct Data
   int I{0};
   int R{0};
   static constexpr int min{0};
+  static constexpr double variation_min{0.5};
 };
 
 class Population
@@ -19,7 +20,6 @@ class Population
   Data state;
   double beta;
   double gamma;
-  static constexpr double beta_gamma_min{0};
 
  public:
   Population(double b, double g, Data initial_state) : state{initial_state}, beta{b}, gamma{g}

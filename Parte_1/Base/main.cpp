@@ -16,7 +16,7 @@ Simulation::Population get_parameter()
   }
   if (beta > 1 || gamma > 1) { throw std::invalid_argument{"Beta and gamma can't be more than 1"}; }
   if (std::cin.fail()) { throw std::invalid_argument{"These parameters have to be numbers"}; }
-  if (initial_state.S == 0 && initial_state.I == 0 && initial_state.R == 0) { throw std::invalid_argument{"These parameters can't all be 0"}; }
+  if (initial_state.S == Simulation::Data::min && initial_state.I == Simulation::Data::min && initial_state.R == Simulation::Data::min) { throw std::invalid_argument{"These parameters can't all be 0"}; }
   Simulation::Population population{beta, gamma, initial_state};
   return population;
 }
@@ -28,7 +28,7 @@ int main()
       Simulation::Population initial_population{get_parameter()};
       int simulation_t;
       std::cin >> simulation_t;
-      if (simulation_t <= 0) { throw std::invalid_argument{"Time has to be more than 0"}; }
+      if (simulation_t <= Simulation::Data::min) { throw std::invalid_argument{"Time has to be more than 0"}; }
       if (std::cin.fail()) { throw std::invalid_argument{"These parameters have to be numbers"}; }
 
       std::vector<Simulation::Population> population{Simulation::Simulate(simulation_t, initial_population)};
@@ -59,9 +59,9 @@ int main()
       std::cerr << "\033[31mInavalid input:\033[0m " << e.what() << '\n';
       std::cin.clear();
       std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-      break;
     } catch (std::runtime_error const& e) {
       std::cerr << "\033[31mError:\033[0m " << e.what() << '\n';
+      return EXIT_FAILURE;
     } catch (...) {
       std::cerr << "Caught unknown exception" << '\n';
       return EXIT_FAILURE;

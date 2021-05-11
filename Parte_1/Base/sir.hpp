@@ -11,6 +11,7 @@ struct Data
   int S{0};
   int I{0};
   int R{0};
+  static constexpr int min{0};
 };
 
 class Population
@@ -18,21 +19,22 @@ class Population
   Data state;
   double beta;
   double gamma;
+  static constexpr double beta_gamma_min{0};
 
  public:
   Population(double b, double g, Data initial_state) : state{initial_state}, beta{b}, gamma{g}
   {
-    assert(state.I >= 0);
-    assert(state.R >= 0);
-    assert(state.S >= 0);
-    assert(beta >= 0);
-    assert(gamma >= 0);
+    assert(state.I >= Data::min);
+    assert(state.R >= Data::min);
+    assert(state.S >= Data::min);
+    assert(beta >= Data::min);
+    assert(gamma >= Data::min);
   }
 
   Population(double b, double g) : beta{b}, gamma{g}
   {
-    assert(beta >= 0);
-    assert(gamma >= 0);
+    assert(beta >= Data::min);
+    assert(gamma >= Data::min);
   }
 
   // Funzioni membro per accedere ai dati privati

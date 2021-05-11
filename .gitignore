@@ -38,7 +38,7 @@
 *.txt 
 
 #Cmake
-*.ts
+
 *.cmake 
 *.make 
 *.internal

@@ -21,7 +21,7 @@ public:
 
       assert(beta>=0);
       assert(gamma>=0);
-      assert(N>=0);
+      assert(N>0);
 
   }
 
@@ -70,6 +70,7 @@ inline int I_near(World const& world, int r, int c);
 inline Person check_next_status (World const& world, int r, int c);
 
 World evolve (World const& current_world);
+
 
 }
 

@@ -2,7 +2,7 @@
 #include <limits>
 #include <stdexcept>
 #include <vector>
-#include "SFML/Graphics.hpp"
+#include <SFML/Graphics.hpp>
 #include "graph.hpp"
 #include "sir.hpp"
 

@@ -1,5 +1,7 @@
+#ifndef GRAPH_HPP
+#define GRAPH_HPP
 #include <vector>
-#include "SFML/Graphics.hpp"
+#include <SFML/Graphics.hpp>
 #include "sir.hpp"
 
 namespace Display {
@@ -9,3 +11,5 @@ void print_S(sf::RenderWindow& window, std::vector<Simulation::Population> const
 
 void print_axis(sf::RenderWindow& window, std::vector<Simulation::Population> const& data_vector);
 }  // namespace Display
+
+#endif

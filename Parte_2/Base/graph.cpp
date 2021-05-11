@@ -32,8 +32,8 @@ void print(sf::RenderWindow &window, Simulation::World const &world) {
 void setStatus(sf::RenderWindow &window, Simulation::World &world) {
   double person_s = person_size(window, world);
   sf::Vector2i local_position = sf::Mouse::getPosition(window);
-  bool good_position = (local_position.x < world.get_side()&&local_position.x >=0&&local_position.y < world.get_side()&&local_position.y>=0);
-  if (sf::Mouse::isButtonPressed(sf::Mouse::Left)&&good_position) {
+ //bool good_position = (local_position.x < world.get_side()&&local_position.x >=0&&local_position.y < world.get_side()&&local_position.y>=0);
+  if (sf::Mouse::isButtonPressed(sf::Mouse::Left)/*&&good_position*/) {
     int r = static_cast<int>(local_position.x / person_s);
     int c = static_cast<int>(local_position.y / person_s);
     if (world.person(r,c)==Simulation::Person::S){

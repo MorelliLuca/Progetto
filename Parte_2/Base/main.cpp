@@ -33,7 +33,7 @@ while (1) {
         Display::print (w_grid, world);
         while (w_grid.isOpen()) {
        sf::Event event;
-        while (w_grid.waitEvent(event)) {
+        while (w_grid.pollEvent(event)) {
           if (event.type == sf::Event::Closed) {
               w_grid.close();
               }
@@ -45,7 +45,7 @@ while (1) {
                 world=Simulation::evolve (world);
                 Display::print (w_grid, world);
                 std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-                while (w_grid.waitEvent(event)) {
+                while (w_grid.pollEvent(event)) {
           if (event.type == sf::Event::Closed) {
               w_grid.close();
               }

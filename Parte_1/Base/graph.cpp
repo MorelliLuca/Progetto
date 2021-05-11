@@ -2,7 +2,7 @@
 #include "graph.hpp"
 #include <algorithm>
 #include <vector>
-#include "SFML/Graphics.hpp"
+#include <SFML/Graphics.hpp>
 #include "sir.hpp"
 
 namespace Display {

@@ -11,7 +11,7 @@ Simulation::Population get_parameter()
   double beta, gamma;
   Simulation::Data initial_state;
   std::cin >> beta >> gamma >> initial_state.S >> initial_state.I >> initial_state.R;
-  if (initial_state.S < 0 || initial_state.I < 0 || initial_state.R < 0 || beta < 0 || gamma < 0) {
+  if (initial_state.S < Simulation::Data::min || initial_state.I < Simulation::Data::min || initial_state.R < Simulation::Data::min || beta < Simulation::Data::min || gamma < Simulation::Data::min) {
     throw std::invalid_argument{"These parameters can't be less than 0"};
   }
   if (beta > 1 || gamma > 1) { throw std::invalid_argument{"Beta and gamma can't be more than 1"}; }

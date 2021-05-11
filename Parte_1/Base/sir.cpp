@@ -15,29 +15,29 @@ Population const Evolve(Population const& initial_population)
   double N{static_cast<double>(initial_population.Total())};
   Population next{beta, gamma};
   next.S() = static_cast<int>(initial_population.S() - beta * (initial_population.S() / N) * initial_population.I() + 0.5);
-  assert(next.S() >= 0);
+  assert(next.S() >= Data::min);
   next.I() =
       static_cast<int>(initial_population.I() + beta * (initial_population.S() / N) * initial_population.I() - gamma * initial_population.I() + 0.5);
-  assert(next.I() >= 0);
+  assert(next.I() >= Data::min);
   next.R() = static_cast<int>(initial_population.R() + gamma * initial_population.I() + 0.5);
-  assert(next.R() >= 0);
+  assert(next.R() >= Data::min);
 
-  if (next.Total() != initial_population.Total() && next.S() != 0)  // Correzione fluttuazione del numero totale di persone
+  if (next.Total() != initial_population.Total() && next.S() != Data::min)  // Correzione fluttuazione del numero totale di persone
   {
     next.S() += initial_population.Total() - next.Total();
   }
-  if (next.Total() != initial_population.Total() && next.S() == 0) { next.R() += initial_population.Total() - next.Total(); }
+  if (next.Total() != initial_population.Total() && next.S() == Data::min) { next.R() += initial_population.Total() - next.Total(); }
 
-  if (next.S() <= 0)  // Condizione S>0
+  if (next.S() <= Data::min)  // Condizione S>0
   {
     next.I() += -next.S();
-    next.S() = 0;
+    next.S() = Data::min;
   }
 
-  if (next.I() <= 0)  // Condizione I>0
+  if (next.I() <= Data::min)  // Condizione I>0
   {
     next.R() += -next.I();
-    next.I() = 0;
+    next.I() = Data::min;
   }
 
   assert(next.Total() == initial_population.Total());
@@ -55,7 +55,7 @@ std::vector<Population> Simulate(int T_duration, Population const& initial_popul
       std::cerr << "Simulation terminated for statistical limit\nEpidemy can be considered ended at day " << i << "\n";
       break;
     }
-    if (result[i].I() == 0) {
+    if (result[i].I() ==Data::min) {
       std::cerr << "Simulation terminated at day " << i << " because there are 0 infected\n";
       break;
     }

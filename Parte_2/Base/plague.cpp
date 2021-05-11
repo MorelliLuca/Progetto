@@ -5,7 +5,7 @@
 
 namespace Simulation {
 
-std::mt19937 gen;
+std::default_random_engine gen{std::random_device{}()};
 std::uniform_real_distribution<> dis(0, 1);
 
 inline int I_near(World const& world, int r, int c)

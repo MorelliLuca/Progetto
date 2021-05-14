@@ -6,13 +6,14 @@
 
 namespace Simulation {
 
-struct Data
+struct Data  // Struct conentente i valori S, I e R
 {
   int S{0};
   int I{0};
   int R{0};
-  static constexpr int min{0};
-  static constexpr double variation_min{0.5};
+  static constexpr int min{0};                 // Valore minimo dei dati
+  static constexpr double variation_min{0.5};  // Variazione minima di popolazione per cui l'algoritmo è sensibile
+  static constexpr int max{1};                 // Valore massimo di beta e gamma
 };
 
 class Population
@@ -49,7 +50,7 @@ class Population
   double const& Beta() const { return beta; }
   double const& Gamma() const { return gamma; }
 };
-
+// Dichiarazione funzioni necessarie per far evolvere la popolazione
 Population const Evolve(Population const& initial_population);
 std::vector<Population> Simulate(int T_duration, Population const& initial_population);
 void Print(std::vector<Population> const& simulated);

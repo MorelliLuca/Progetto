@@ -1,12 +1,9 @@
 
 #include "graph.hpp"
+#include <SFML/Graphics.hpp>
 #include <algorithm>
 #include <vector>
-#include <SFML/Graphics.hpp>
 #include "sir.hpp"
-
-
-
 
 namespace Display {
 constexpr double Origin{0};
@@ -76,7 +73,7 @@ void print_axis(sf::RenderWindow& window, std::vector<Simulation::Population> co
     line.setPosition(sf::Vector2f(Origin, i * window.getSize().y / Axis_division));
     window.draw(line);
     label.setString(std::to_string(data_vector[0].Total() / Axis_division * (Axis_division - i)));
-    label.setPosition(sf::Vector2f(Line_length, i * window.getSize().y / Axis_division - Font_dimension/2));
+    label.setPosition(sf::Vector2f(Line_length, i * window.getSize().y / Axis_division - Font_dimension / 2));
     window.draw(label);
   }
   label.setString("0");
@@ -88,11 +85,11 @@ void print_axis(sf::RenderWindow& window, std::vector<Simulation::Population> co
     line.setPosition(sf::Vector2f(i * window.getSize().x / Axis_division, window.getSize().y - Line_length));
     window.draw(line);
     label.setString(std::to_string(data_vector.size() / Axis_division * i));
-    label.setPosition(sf::Vector2f(i * window.getSize().x / Axis_division - Font_dimension/2, window.getSize().y - Line_length-Font_dimension));
+    label.setPosition(sf::Vector2f(i * window.getSize().x / Axis_division - Font_dimension / 2, window.getSize().y - Line_length - Font_dimension));
     window.draw(label);
   }
   label.setString("Day");
-  label.setPosition(sf::Vector2f(window.getSize().x - Line_length-Font_dimension, window.getSize().y - Font_dimension));
+  label.setPosition(sf::Vector2f(window.getSize().x - Line_length - Font_dimension, window.getSize().y - Font_dimension));
   window.draw(label);
   window.display();
 }

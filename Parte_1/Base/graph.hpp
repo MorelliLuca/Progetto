@@ -1,7 +1,7 @@
 #ifndef GRAPH_HPP
 #define GRAPH_HPP
-#include <vector>
 #include <SFML/Graphics.hpp>
+#include <vector>
 #include "sir.hpp"
 
 namespace Display {

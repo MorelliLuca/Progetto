@@ -6,9 +6,9 @@
 
 namespace Simulation {
 
-constexpr double Approx_term{0.5};
+constexpr double Approx_term{0.5};  // Termine utilizzato per arrotondare i double a int con lo static_cast
 
-// Funzione Evolve-Calcola lo stato successivo della popolazione
+// Funzione Evolve: calcola lo stato successivo della popolazione
 
 Population const Evolve(Population const& initial_population)
 {
@@ -18,17 +18,20 @@ Population const Evolve(Population const& initial_population)
   Population next{beta, gamma};
   next.S() = static_cast<int>(initial_population.S() - beta * (initial_population.S() / N) * initial_population.I() + Approx_term);
   assert(next.S() >= Data::min);
-  next.I() =
-      static_cast<int>(initial_population.I() + beta * (initial_population.S() / N) * initial_population.I() - gamma * initial_population.I() + Approx_term);
+  next.I() = static_cast<int>(initial_population.I() + beta * (initial_population.S() / N) * initial_population.I() - gamma * initial_population.I() +
+                              Approx_term);
   assert(next.I() >= Data::min);
   next.R() = static_cast<int>(initial_population.R() + gamma * initial_population.I() + Approx_term);
   assert(next.R() >= Data::min);
 
-  if (next.Total() != initial_population.Total() && next.S() != Data::min)  // Correzione fluttuazione del numero totale di persone
+  if (next.Total() != initial_population.Total() && next.S() != Data::min)  // Correzione fluttuazione del numero totale di persone con S>0
   {
     next.S() += initial_population.Total() - next.Total();
   }
-  if (next.Total() != initial_population.Total() && next.S() == Data::min) { next.R() += initial_population.Total() - next.Total(); }
+  if (next.Total() != initial_population.Total() && next.S() == Data::min)  // Correzione fluttuazione del numero totale di persone con S=0
+  {
+    next.R() += initial_population.Total() - next.Total();
+  }
 
   if (next.S() <= Data::min)  // Condizione S>0
   {
@@ -53,11 +56,14 @@ std::vector<Population> Simulate(int T_duration, Population const& initial_popul
   std::vector<Population> result{initial_population};
   result.reserve(T_duration + 1);
   for (int i{0}; i < T_duration; ++i) {
-    if (result[i].I() * result[i].Gamma() <= Simulation::Data::variation_min && result[i].Beta() * result[i].S() / result[i].Total() * result[i].I() <= Simulation::Data::variation_min) {
+    // Terminazione della simulazione se le variazioni di popolazione sono troppo piccole per poter esser valutate in seguto alle approssimazioni
+    if (result[i].I() * result[i].Gamma() <= Simulation::Data::variation_min &&
+        result[i].Beta() * result[i].S() / result[i].Total() * result[i].I() <= Simulation::Data::variation_min) {
       std::cerr << "Simulation terminated for statistical limit\nEpidemy can be considered ended at day " << i << "\n";
       break;
     }
-    if (result[i].I() ==Data::min) {
+    // Terminazione della simulazione se il numero di I=0
+    if (result[i].I() == Data::min) {
       std::cerr << "Simulation terminated at day " << i << " because there are 0 infected\n";
       break;
     }
@@ -65,7 +71,7 @@ std::vector<Population> Simulate(int T_duration, Population const& initial_popul
   }
   return result;
 }
-void Print(std::vector<Population> const& simulated)
+void Print(std::vector<Population> const& simulated)  // Funzione che stampa la tabella con i risultati
 {
   std::cout << "-----------------------------------------------------------\n"
             << "Simulation        Days: " << simulated.size() - 1 << std::setw(18) << "        N: " << simulated[0].Total()

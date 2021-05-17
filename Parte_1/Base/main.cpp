@@ -27,40 +27,36 @@ Simulation::Population get_parameter()
 
 int main()
 {
+  std::cout<<"Insert Beta, Gamma, S, I, R and the time of simulation: ";
   while (1) {
     try {
-      Simulation::Population initial_population{get_parameter()};
-      int simulation_t;
+      Simulation::Population initial_population{get_parameter()}; //Inizializiazione della popoalzione iniziale
+      int simulation_t; //Tempo di simulazione
       std::cin >> simulation_t;
+      //Controllo sul tempo di simulazione inserito 
       if (simulation_t <= Simulation::Data::min) { throw std::invalid_argument{"Time has to be more than 0"}; }
       if (std::cin.fail()) { throw std::invalid_argument{"These parameters have to be numbers"}; }
-
+      //Simulazione 
       std::vector<Simulation::Population> population{Simulation::Simulate(simulation_t, initial_population)};
+      //Stampa a terminale dei risulati della simulazione
       Simulation::Print(population);
-      // Graphing
-      sf::RenderWindow w_graph(sf::VideoMode(400, 400), "SIR Graph");
-      w_graph.clear(sf::Color::White);
-      Display::print_R(w_graph, population);
-      Display::print_S(w_graph, population);
-      Display::print_I(w_graph, population);
-      Display::print_axis(w_graph, population);
-      while (w_graph.isOpen()) {
-        sf::Event event;
-        while (w_graph.waitEvent(event)) {
-          if (event.type == sf::Event::Closed) w_graph.close();
-          if (event.type == sf::Event::Resized) {
-            w_graph.clear(sf::Color::White);
-            Display::print_R(w_graph, population);
-            Display::print_S(w_graph, population);
-            Display::print_I(w_graph, population);
-            Display::print_axis(w_graph, population);
-            break;
+      sf::RenderWindow w_graph(sf::VideoMode(400, 400), "SIR Graph"); //Finestra grafica 
+      w_graph.clear(sf::Color::White); //Impostazione dello sfondo 
+      Display::print_R(w_graph, population);  //Stampa grafica del grafico di R
+      Display::print_S(w_graph, population);  //Stampa grafica del grafico di S
+      Display::print_I(w_graph, population);  //Stampa grafica del grafico di R
+      Display::print_axis(w_graph, population);  //Stampa degli assi
+      while (w_graph.isOpen()) {  //Ciclo che evita la terminazione automatica del programma a finestra aperta
+        sf::Event event;  //Evento usato per rilevare la chiusura della finestra grafica
+        while (w_graph.waitEvent(event)) {  //Ciclo utilizzato per chiudere il programma quando viene chiusa la finestra 
+          if (event.type == sf::Event::Closed) {w_graph.close()};
           }
         }
       }
       break;
-    } catch (std::invalid_argument const& e) {
+    } catch (std::invalid_argument const& e) { 
       std::cerr << "\033[31mInavalid input:\033[0m " << e.what() << '\n';
+      //Pulizia di quanto inserito nello stream per poter reinserire i dati 
       std::cin.clear();
       std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     } catch (std::runtime_error const& e) {

@@ -10,12 +10,13 @@ constexpr double Approx_term{0.5};  // Termine utilizzato per arrotondare i doub
 
 // Funzione Evolve: calcola lo stato successivo della popolazione
 
-Population const Evolve(Population const& initial_population)
+Population const Evolve(Population const& initial_population) //Funzione che determina l'evoluzione della popolazione con il modello SIR
 {
   double gamma{initial_population.Gamma()};
   double beta{initial_population.Beta()};
   double N{static_cast<double>(initial_population.Total())};
   Population next{beta, gamma};
+  //Calcolo dei valori successivi di S,I e R
   next.S() = static_cast<int>(initial_population.S() - beta * (initial_population.S() / N) * initial_population.I() + Approx_term);
   assert(next.S() >= Data::min);
   next.I() = static_cast<int>(initial_population.I() + beta * (initial_population.S() / N) * initial_population.I() - gamma * initial_population.I() +

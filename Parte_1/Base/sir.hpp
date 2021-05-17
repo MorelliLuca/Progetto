@@ -16,15 +16,16 @@ struct Data  // Struct conentente i valori S, I e R
   static constexpr int max{1};                 // Valore massimo di beta e gamma
 };
 
-class Population
+class Population  //Classe che rappresenta una popolazione 
 {
-  Data state;
+  Data state; //Dati S I R
   double beta;
   double gamma;
 
  public:
   Population(double b, double g, Data initial_state) : state{initial_state}, beta{b}, gamma{g}
   {
+    // Condizioni necessarie per il senso della simulazione
     assert(state.I >= Data::min);
     assert(state.R >= Data::min);
     assert(state.S >= Data::min);
@@ -34,6 +35,7 @@ class Population
 
   Population(double b, double g) : beta{b}, gamma{g}
   {
+    // Condizioni necessarie per il senso della simulazione
     assert(beta >= Data::min);
     assert(gamma >= Data::min);
   }
@@ -50,7 +52,7 @@ class Population
   double const& Beta() const { return beta; }
   double const& Gamma() const { return gamma; }
 };
-// Dichiarazione funzioni necessarie per far evolvere la popolazione
+// Dichiarazione free function di sir.cpp
 Population const Evolve(Population const& initial_population);
 std::vector<Population> Simulate(int T_duration, Population const& initial_population);
 void Print(std::vector<Population> const& simulated);

@@ -31,8 +31,8 @@ class Population  // Classe che rappresenta una popolazione
       assert(state.S >= Data::min);
       assert(beta >= Data::min);
       assert(gamma >= Data::min);
-      assert(beta < Max);
-      assert(gamma < Max);
+      assert(beta <= Max);
+      assert(gamma <= Max);
    }
 
    Population(double b, double g) : beta{b}, gamma{g}
@@ -40,8 +40,8 @@ class Population  // Classe che rappresenta una popolazione
       // Condizioni necessarie per il senso della simulazione
       assert(beta >= Data::min);
       assert(gamma >= Data::min);
-      assert(beta < Max);
-      assert(gamma < Max);
+      assert(beta <= Max);
+      assert(gamma <= Max);
    }
 
    // Funzioni membro per accedere ai dati privati

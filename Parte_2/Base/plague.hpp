@@ -27,8 +27,8 @@ class World  // Classe che contine i dati del mondo
       assert(beta >= Data_min);
       assert(gamma >= Data_min);
       assert(N > Data_min);
-      assert(beta < Beta_Gamma_Max);
-      assert(gamma < Beta_Gamma_Max);
+      assert(beta <= Beta_Gamma_Max);
+      assert(gamma <= Beta_Gamma_Max);
    }
 
    Person const& person(int r, int c) const  // Funzione menbro che consente di accedere allo stato di una determinata persona

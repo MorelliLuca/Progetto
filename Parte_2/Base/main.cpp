@@ -19,7 +19,7 @@ Simulation::World get_parameter()
    std::cin >> side >> beta >> gamma;
       // Controlli della coerenza dei dati inseriti con il modello
       if (beta < Min_input || gamma < Min_input) {
-         throw std::invalid_argument{"These parameters can't be less than 0"};
+         throw std::invalid_argument{"Beta and gamma can't be less than 0"};
    }
       if (side <= Min_input) {
          throw std::invalid_argument{"This parameter has to be more than 0"};

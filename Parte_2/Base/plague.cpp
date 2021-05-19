@@ -40,12 +40,12 @@ inline Person person_next_status(World const& world, int r, int c)  // Funzione 
             }
             break;
          case Person::I:  // Caso persona infetta
-               if (dis(gen) <= world.get_gamma()) {
+               if (dis(gen) <= world.get_gamma()) { 
                   return Person::R;
             }
             break;
-         case Person::R:  // Caso persona rimossa
-            break;
+         default:        // Caso persona rimossa o cella vuota
+            break;   
       }
    return world.person(r, c);
 }

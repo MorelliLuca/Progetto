@@ -6,7 +6,7 @@
 #include "plague.hpp"
 
 namespace Display {
-constexpr double Origin{0};                                                         // Coordinate sia x che y dell'origine
+constexpr int Origin{0};                                                         // Coordinate sia x che y dell'origine
 constexpr int Grid_line_width{1};                                                   // Spessore della linea che separa le celle
 constexpr int Sleep_time{200};                                                      // Tempo di attesa tra la rilevazione di un click e il seguente
 double person_size(sf::RenderWindow const& window, Simulation::World const& world)  // Funzione che calcola la dimesione di una cella
@@ -19,14 +19,16 @@ void print(sf::RenderWindow& window, Simulation::World const& world)  // Funzion
    double person_s = person_size(window, world);
    window.clear(sf::Color::White);                                                                   // Pulizia della finstra grafica
    sf::RectangleShape square(sf::Vector2f(person_s - Grid_line_width, person_s - Grid_line_width));  // Creazione della forma di una cella
-      for (int r{0}; r < world.get_side(); ++r) {
-            for (int c{0}; c < world.get_side(); ++c) {
+      for (int r{Origin}; r < world.get_side(); ++r) {
+            for (int c{Origin}; c < world.get_side(); ++c) {
                square.setPosition(r * (person_s), c * (person_s));  // Posizionamento di un quadrato nella griglia
                   // Impostazione del colore in funzione dello stato della persona
                   if (world.person(r, c) == Simulation::Person::S) {
                      square.setFillColor(sf::Color::Green);
                   } else if (world.person(r, c) == Simulation::Person::I) {
                      square.setFillColor(sf::Color::Red);
+                  } else if (world.person(r, c) == Simulation::Person::E) {
+                     square.setFillColor(sf::Color::Black);
                   } else {
                      square.setFillColor(sf::Color::White);
                   }
@@ -53,6 +55,8 @@ void set_status(sf::RenderWindow& window, Simulation::World& world)  // Funzione
             } else if (world.person(r, c) == Simulation::Person::I) {
                world.person(r, c) = Simulation::Person::R;
             } else if (world.person(r, c) == Simulation::Person::R) {
+               world.person(r, c) = Simulation::Person::E;
+            } else if (world.person(r, c) == Simulation::Person::E) {
                world.person(r, c) = Simulation::Person::S;
          }
          std::this_thread::sleep_for(std::chrono::milliseconds(Sleep_time));  // Sleep necessario per garantire che sia stato effettuato un click

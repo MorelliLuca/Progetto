@@ -6,7 +6,7 @@
 
 namespace Simulation {
 
-enum class Person { S, I, R };  // Enum class degli stati della salute di una persona
+enum class Person { E, S, I, R };  // Enum class degli stati della salute di una persona
 
 class World  // Classe che contine i dati del mondo
 {
@@ -15,10 +15,10 @@ class World  // Classe che contine i dati del mondo
    Grid grid;                         // Griglia delle persone
    double beta;
    double gamma;
-   static constexpr Person removed_person = Person::R;  // Stato delle persone esterne alla griglia
+   static constexpr Person outside_person = Person::E;  // Stato delle persone esterne alla griglia
    static constexpr int Data_min{0};                    // Valor minimo assunto dai dati
    static constexpr int Beta_Gamma_Max{1};              // Valor massimo assunto da gamma e beta
-   static constexpr int Extrernal_person{-1};           // Coordinate delle celle esterne nel bordo superiore e di sinistra
+   static constexpr int Outside_coord{-1};           // Coordinate delle celle esterne nel bordo superiore e di sinistra
 
   public:
    World(int N, double b, double g) : side{N}, grid(N * N, Person::S), beta{b}, gamma{g}  // Costruttore
@@ -35,11 +35,11 @@ class World  // Classe che contine i dati del mondo
    {
       // Condizioni necessarie perchè si stia richidendo una persona della griglia
       assert(r <= side && c <= side);
-      assert(r >= Extrernal_person && c >= Extrernal_person);
+      assert(r >= Outside_coord && c >= Outside_coord);
          // Caso in cui si richieda lo stato di una persona appena esterna alla griglia di default R (rimossa)
          // necessario per poter controllare le persone adiacenti ad una persona sul bordo della griglia
-         if (r == Extrernal_person || c == Extrernal_person || r == side || c == side) {
-            return removed_person;
+         if (r == Outside_coord || c == Outside_coord || r == side || c == side) {
+            return outside_person;
       }
       int cursor = r * side + c;  // Conversione delle coordinate bidimensionali alla posizione nel vettore grid
       return grid[cursor];

@@ -43,15 +43,15 @@ int main()
                sf::RenderWindow w_grid(sf::VideoMode(Window_side, Window_side), "SIR Simulation");  // Finstra in cui è rappresentata la griglia
                Display::print(w_grid, world);  // Visualizazione a finestra della configurazione iniziale
                int day{0};                     // Contatore dei giorni già simulati
-               // Inizio stampa della tabella
-               Simulation::print_intestation(world);
-               Simulation::print_terminal(world, day);
                   while (w_grid.isOpen()) {  // Ciclco che impedisce che il programma termini automaticamente prima della chiusura della finestra
                      sf::Event event;        // Evento utilizzato per rilevare la chiusura della finestra grafica
                      Display::set_status(w_grid, world);  // Funzione che permette di cambiare lo stato di una persona con il mouse
                      Display::print(w_grid, world);       // Visualizazione dello stato modificato della popolazione
                         if (sf::Keyboard::isKeyPressed(
                                 sf::Keyboard::Enter)) {  // Rilevazione della perssione del tasto enter per iniziare la simulazione
+                              // Inizio stampa della tabella
+                              Simulation::print_intestation(world);
+                              Simulation::print_terminal(world, day);
                               while (!sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) &&
                                      w_grid.isOpen()) {  // Ciclo che continua la simulazione fino alla pressione di esc o alla chisura della finestra
                                  world = Simulation::evolve(world);  // Evoluzione della simulazione di un giorno

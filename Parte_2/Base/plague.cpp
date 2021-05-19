@@ -61,7 +61,7 @@ World evolve(World const& current_world)  // Funzione che determina la configura
 void print_intestation(World const& world)  // Funzione che stampa a terminale l'intestazione della tabella dei dati simulati
 {
    std::cout << "-----------------------------------------------------------\n"
-             << "Simulation                N: " << world.get_side() * world.get_side()
+             << "Simulation                N: " << world.get_side() * world.get_side() - world.get_E()
              << "\n"
                 "-----------------------------------------------------------\n"
                 "|  Day  |    S    |    I    |    R    |  Beta  |  Gamma  |\n";

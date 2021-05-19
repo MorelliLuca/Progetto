@@ -87,6 +87,16 @@ class World  // Classe che contine i dati del mondo
          }
       return count;
    }
+   int get_E() const
+   {
+      int count{0};  // Conteggio delle persone E
+         for (auto it{grid.begin()}; it != grid.end(); it++) {
+               if (*it == Person::E) {
+                  ++count;
+            }
+         }
+      return count;
+   }
 };
 
 inline bool operator==(World const& left, World const& right)  // Operatore == per la classe World necessario per i test

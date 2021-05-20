@@ -36,7 +36,7 @@ int main()
    std::cout << "Insert Beta, Gamma, S, I, R and the time of simulation: ";
       while (1) {
             try {
-               Simulation::Population initial_population{get_parameter()};  // Inizializiazione della popoalzione iniziale
+               Simulation::Population initial_population{get_parameter()};  // Inizializzazione della popolazione iniziale
                int simulation_t;                                            // Tempo di simulazione
                std::cin >> simulation_t;
                   // Controllo sul tempo di simulazione inserito

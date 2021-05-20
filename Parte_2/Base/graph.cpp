@@ -49,7 +49,7 @@ void set_status(sf::RenderWindow& window, Simulation::World& world)  // Funzione
    bool good_position =
        (r >= Origin && c >= Origin && r < world.get_side() && c < world.get_side());  // Controllo che il mouse si trovi dentro alla finestra
 
-      if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && good_position) {  // Variazione da S->I, I->R e R->S
+      if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && good_position) {  // Variazione da S->I, I->R, R->E e E->S
             if (world.person(r, c) == Simulation::Person::S) {
                world.person(r, c) = Simulation::Person::I;
             } else if (world.person(r, c) == Simulation::Person::I) {

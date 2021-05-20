@@ -55,22 +55,20 @@ Population const Evolve(Population const& initial_population)  // Funzione che d
    assert(next.Total() == initial_population.Total());
    return next;
 
-   // Funzione simulate-Restituisce un vettore Population con gli stati giorno
-   // per giorno
-}
+} 
+// Funzione simulate-Restituisce un vettore Population con gli stati giorno per giorno
 std::vector<Population> Simulate(int T_duration, Population const& initial_population)
 {
    std::vector<Population> result{initial_population};
    result.reserve(T_duration + 1);
       for (int i{Data::min}; i < T_duration; ++i) {
-            // Terminazione della simulazione se le variazioni di popolazione sono troppo piccole per poter esser valutate in seguto alle
-            // approssimazioni
+            // Terminazione della simulazione se le variazioni di popolazione sono troppo piccole per poter esser valutate in seguito alle approssimazioni
             if (result[i].I() * result[i].Gamma() <= Simulation::Data::Variation_min &&
                 result[i].Beta() * result[i].S() / result[i].Total() * result[i].I() <= Simulation::Data::Variation_min) {
                std::cerr << "Simulation terminated for statistical limit\nEpidemy can be considered ended at day " << i << "\n";
                break;
          }
-            // Terminazione della simulazione se il numero di I=0
+            // Terminazione della simulazione se I=0
             if (result[i].I() == Data::min) {
                std::cerr << "Simulation terminated at day " << i << " because there are 0 infected\n";
                break;

@@ -10,7 +10,7 @@
 constexpr int sleep_time{1000};  // Tempo trascorso tra la simulazione di un giorno e l'altro
 constexpr int Max_input{1};      // Valore massimo per l'input di gamma e beta
 constexpr int Min_input{0};      // Valore minimo degli input
-constexpr int Window_side{400};  // Dimensione finstra grafica
+constexpr int Window_side{400};  // Dimensione finestra grafica
 
 Simulation::World get_parameter()
 {  // Funzione che prende in input i parametri iniziali della simulazione
@@ -39,23 +39,23 @@ int main()
    std::cout << "Insert the side of the world, beta and gamma: ";
       while (1) {
             try {
-               Simulation::World world{get_parameter()};  // Inizializazione del mondo nella sua configurazione iniziale
-               sf::RenderWindow w_grid(sf::VideoMode(Window_side, Window_side), "SIR Simulation");  // Finstra in cui è rappresentata la griglia
-               Display::print(w_grid, world);  // Visualizazione a finestra della configurazione iniziale
+               Simulation::World world{get_parameter()};  // Inizializzazione del mondo nella sua configurazione iniziale
+               sf::RenderWindow w_grid(sf::VideoMode(Window_side, Window_side), "SIR Simulation");  // Finestra in cui è rappresentata la griglia
+               Display::print(w_grid, world);  // Visualizzazione a finestra della configurazione iniziale
                int day{0};                     // Contatore dei giorni già simulati
-                  while (w_grid.isOpen()) {  // Ciclco che impedisce che il programma termini automaticamente prima della chiusura della finestra
+                  while (w_grid.isOpen()) {  // Ciclo che impedisce che il programma termini automaticamente prima della chiusura della finestra
                      sf::Event event;        // Evento utilizzato per rilevare la chiusura della finestra grafica
-                     Display::set_status(w_grid, world);  // Funzione che permette di cambiare lo stato di una persona con il mouse
-                     Display::print(w_grid, world);       // Visualizazione dello stato modificato della popolazione
+                     Display::set_status(w_grid, world);  // Funzione che permette di cambiare lo stato di una persona con il click del mouse
+                     Display::print(w_grid, world);       // Visualizzazione dello stato modificato della popolazione
                         if (sf::Keyboard::isKeyPressed(
-                                sf::Keyboard::Enter)) {  // Rilevazione della perssione del tasto enter per iniziare la simulazione
+                                sf::Keyboard::Enter)) {  // Rilevazione della pressione del tasto enter per iniziare la simulazione
                               // Inizio stampa della tabella
                               Simulation::print_intestation(world);
                               Simulation::print_terminal(world, day);
                               while (!sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) &&
-                                     w_grid.isOpen()) {  // Ciclo che continua la simulazione fino alla pressione di esc o alla chisura della finestra
+                                     w_grid.isOpen()) {  // Ciclo che continua la simulazione fino alla pressione di esc o alla chiusura della finestra
                                  world = Simulation::evolve(world);  // Evoluzione della simulazione di un giorno
-                                 Display::print(w_grid, world);      // Visualizazione delle variazioni graficamente
+                                 Display::print(w_grid, world);      // Visualizazione grafica delle variazioni 
                                  ++day;
                                  Simulation::print_terminal(world, day);  // Stampa a terminale
                                  std::this_thread::sleep_for(std::chrono::milliseconds(sleep_time));

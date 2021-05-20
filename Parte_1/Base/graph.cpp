@@ -16,7 +16,7 @@ void print_I(sf::RenderWindow& window, std::vector<Simulation::Population> const
 {
    double epsilon_x{window.getSize().x / static_cast<double>(data_vector.size())};      // Dimensione in pixel di un giorno
    double epsilon_y{window.getSize().y / static_cast<double>(data_vector[0].Total())};  // Dimensione in pixel di una persona
-   sf::RectangleShape column_bar(sf::Vector2f(epsilon_x, Origin));    // Colonna che costituisce l'area sottesa al grafico per un piccolo deltax
+   sf::RectangleShape column_bar(sf::Vector2f(epsilon_x, Origin));    // Colonna che costituisce l'area sottesa al grafico per un piccolo delta x
    column_bar.setPosition(sf::Vector2f(Origin, window.getSize().y));  // Pozione iniziale del primo dato del grafico
    column_bar.setFillColor(sf::Color::Red);                           // Colore del grafico
       // Stampa di una colonna per ogni elemento del vettore nella sua rispettiva posizione
@@ -24,8 +24,8 @@ void print_I(sf::RenderWindow& window, std::vector<Simulation::Population> const
          column_bar.setSize(sf::Vector2f(epsilon_x, it->I() * epsilon_y));
          column_bar.move(sf::Vector2f(Origin, -it->I() * epsilon_y));
          window.draw(column_bar);
-         // Correzione dovuta al fatto che l'origine del piano per sfml è in alto a sinitra e non in basso a sinistra
-         // Così facendo resetto la posizione sull'asse dell y della colonna per agevolare il movimento verso il giorno successivo
+         // Correzione dovuta al fatto che l'origine del piano per sfml è a sinistra in alto e non in basso
+         // Resetta la posizione sull'asse y per agevolare il movimento verso il giorno successivo
          column_bar.move(sf::Vector2f(epsilon_x, it->I() * epsilon_y));
       }
    window.display();
@@ -88,8 +88,8 @@ void print_axis(sf::RenderWindow& window, std::vector<Simulation::Population> co
    label.setString("0");  // Etichetta origine
    label.setPosition(sf::Vector2f(Origin, window.getSize().y - Font_dimension));
    window.draw(label);
-   line.rotate(Rot_angle);  // Rotazione di 90° necessaria per stmpare la scala sull'asse x
-   // Stampa della scalla asse x
+   line.rotate(Rot_angle);  // Rotazione di 90° necessaria per stampare la scala sull'asse x
+   // Stampa della scala dell'asse x
       for (int i{1}; i < Axis_division; ++i) {
          line.setPosition(sf::Vector2f(i * window.getSize().x / Axis_division, window.getSize().y - Line_length));
          window.draw(line);

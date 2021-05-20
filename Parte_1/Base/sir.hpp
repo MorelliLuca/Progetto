@@ -6,7 +6,7 @@
 
 namespace Simulation {
 
-struct Data  // Struct conentente i valori S, I e R
+struct Data  // Struct contenente i valori S, I e R
 {
    int S{0};
    int I{0};
@@ -31,8 +31,8 @@ class Population  // Classe che rappresenta una popolazione
       assert(state.S >= Data::min);
       assert(beta >= Data::min);
       assert(gamma >= Data::min);
-      assert(beta <= Max);
-      assert(gamma <= Max);
+      assert(beta <= Data::Max);
+      assert(gamma <= Data::Max);
    }
 
    Population(double b, double g) : beta{b}, gamma{g}
@@ -40,8 +40,8 @@ class Population  // Classe che rappresenta una popolazione
       // Condizioni necessarie per il senso della simulazione
       assert(beta >= Data::min);
       assert(gamma >= Data::min);
-      assert(beta <= Max);
-      assert(gamma <= Max);
+      assert(beta <= Data::Max);
+      assert(gamma <= Data::Max);
    }
 
    // Funzioni membro per accedere ai dati privati
@@ -56,7 +56,7 @@ class Population  // Classe che rappresenta una popolazione
    double const& Beta() const { return beta; }
    double const& Gamma() const { return gamma; }
 };
-// Dichiarazione free function di sir.cpp
+// Dichiarazione free functions di sir.cpp
 Population const Evolve(Population const& initial_population);
 std::vector<Population> Simulate(int T_duration, Population const& initial_population);
 void Print(std::vector<Population> const& simulated);

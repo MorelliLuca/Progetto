@@ -32,7 +32,7 @@ inline int I_near(World const& world, int r, int c)  // Funzione che controlla q
 
 inline Person person_next_status(World const& world, int r, int c)  // Funzione che determina quale sarà il prossimo stato di una persona
 {
-   int const near_I{I_near(world, r, c)};  // Numero di infetti vicino alla persona in poszione (r,c)
+   int const near_I{I_near(world, r, c)};  // Numero di infetti vicino alla persona in posizione (r,c)
       switch (world.person(r, c)) {
          case Person::S:  // Caso persona sana
                if (near_I != 0 && dis(gen) <= (world.get_beta() + (world.get_beta() / Total_near_person) * near_I)) {

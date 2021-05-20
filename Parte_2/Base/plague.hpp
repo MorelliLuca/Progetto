@@ -8,7 +8,7 @@ namespace Simulation {
 
 enum class Person { E, S, I, R };  // Enum class degli stati della salute di una persona
 
-class World  // Classe che contine i dati del mondo
+class World  // Classe che contiene i dati del mondo
 {
    using Grid = std::vector<Person>;  // Alias di un vettore di persone
    int side;                          // Numero di persone per lato del mondo
@@ -33,10 +33,10 @@ class World  // Classe che contine i dati del mondo
 
    Person const& person(int r, int c) const  // Funzione menbro che consente di accedere allo stato di una determinata persona
    {
-      // Condizioni necessarie perchè si stia richidendo una persona della griglia
+      // Condizioni necessarie perchè si stia richiedendo una persona della griglia
       assert(r <= side && c <= side);
       assert(r >= Outside_coord && c >= Outside_coord);
-         // Caso in cui si richieda lo stato di una persona appena esterna alla griglia di default R (rimossa)
+         // Caso in cui si richieda lo stato di una persona appena esterna alla griglia (di default E)
          // necessario per poter controllare le persone adiacenti ad una persona sul bordo della griglia
          if (r == Outside_coord || c == Outside_coord || r == side || c == side) {
             return outside_person;
@@ -47,7 +47,7 @@ class World  // Classe che contine i dati del mondo
 
    Person& person(int r, int c)  // Funzione Membro che consente di modificare lo stato di una persona
    {
-      // Condizioni necessarie perchè si stia richidendo una persona della griglia
+      // Condizioni necessarie perchè si stia richiedendo una persona della griglia
       assert(r < side && c < side);
       assert(r >= Data_min && c >= Data_min);
       int cursor = r * side + c;  // Conversione delle coordinate bidimensionali alla posizione nel vettore grid
@@ -79,7 +79,7 @@ class World  // Classe che contine i dati del mondo
    }
    int get_R() const
    {
-      int count{0};  // Conteggio delle persone I
+      int count{0};  // Conteggio delle persone R
          for (auto it{grid.begin()}; it != grid.end(); it++) {
                if (*it == Person::R) {
                   ++count;
@@ -115,7 +115,7 @@ inline bool operator==(World const& left, World const& right)  // Operatore == p
 
 inline bool operator!=(World const& left, World const& right) { return !(left == right); }  // Operatore != per la classe World necessario per i test
 
-// Dichiarazione delle free function di plague.cpp
+// Dichiarazione delle free functions di plague.cpp
 
 int I_near(World const& world, int r, int c);
 

@@ -3,6 +3,8 @@
 
 #include <cassert>
 #include <vector>
+#include <algorithm>
+#include <iostream>
 
 namespace Simulation {
 
@@ -15,7 +17,7 @@ class World  // Classe che contine i dati del mondo
    Grid grid;                         // Griglia delle persone
    double beta;
    double gamma;
-   static constexpr Person outside_person = Person::E;  // Stato delle persone esterne alla griglia
+   static constexpr Person outside_person=Person::E;  // Stato delle persone esterne alla griglia
    static constexpr int Data_min{0};                    // Valor minimo assunto dai dati
    static constexpr int Beta_Gamma_Max{1};              // Valor massimo assunto da gamma e beta
    static constexpr int Outside_coord{-1};           // Coordinate delle celle esterne nel bordo superiore e di sinistra
@@ -57,45 +59,38 @@ class World  // Classe che contine i dati del mondo
    int get_side() const { return side; }
    double const& get_beta() const { return beta; }
    double const& get_gamma() const { return gamma; }
-   int get_S() const
+   int get_S() const // Conteggio delle persone S
    {
-      int count{0};  // Conteggio delle persone S
-         for (auto it{grid.begin()}; it != grid.end(); it++) {
-               if (*it == Person::S) {
-                  ++count;
-            }
-         }
-      return count;
+      return std::count_if(grid.begin(),grid.end(),[](Person person){return person==Person::S;});
    }
-   int get_I() const
+   int get_I() const // Conteggio delle persone I
    {
-      int count{0};  // Conteggio delle persone I
-         for (auto it{grid.begin()}; it != grid.end(); it++) {
-               if (*it == Person::I) {
-                  ++count;
-            }
-         }
-      return count;
+      return std::count_if(grid.begin(),grid.end(),[](Person person){return person==Person::I;});
    }
-   int get_R() const
+   int get_R() const // Conteggio delle persone R
    {
-      int count{0};  // Conteggio delle persone I
-         for (auto it{grid.begin()}; it != grid.end(); it++) {
-               if (*it == Person::R) {
-                  ++count;
-            }
-         }
-      return count;
+      return std::count_if(grid.begin(),grid.end(),[](Person person){return person==Person::R;});
    }
-   int get_E() const
+   int get_E() const // Conteggio delle persone E
    {
-      int count{0};  // Conteggio delle persone E
-         for (auto it{grid.begin()}; it != grid.end(); it++) {
-               if (*it == Person::E) {
-                  ++count;
-            }
+      return std::count_if(grid.begin(),grid.end(),[](Person person){return person==Person::E;});
+   }
+
+   std::vector<int> find_E() const  //Funzione che restituisce un vettore con le coordinate delle celle vuote
+   {
+      std::vector<int> result;
+      auto it{grid.begin()};
+      while(it!=grid.end())
+      {
+         it = std::find(it,grid.end(),Person::E);
+         if(it!=grid.end()){
+         int position=std::distance(grid.begin(),it);
+         result.push_back(position/side);
+         result.push_back(position%side);
+         it++;
          }
-      return count;
+      }
+      return result;
    }
 };
 
@@ -123,9 +118,16 @@ Person person_next_status(World const& world, int r, int c);
 
 World evolve(World const& current_world);
 
-void print_terminal(Simulation::World& world, int day);
+void print_terminal(Simulation::World const& world, int day,double R0);
 
 void print_intestation(World const& world);
+
+double eval_R0(World const& old_world,World const& new_World);
+
+void swap(World& world,int r1,int c1,int r2, int c2);
+
+void walk(World& world);
+
 
 }  // namespace Simulation
 

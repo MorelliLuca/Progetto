@@ -72,7 +72,7 @@ IncludeCategories:
 IncludeIsMainRegex: '([-_](test|unittest))?$'
 IndentCaseLabels: true
 IndentPPDirectives: None
-IndentWidth:     3
+IndentWidth:     2
 IndentWrappedFunctionNames: true
 JavaScriptQuotes: Leave
 JavaScriptWrapImports: true

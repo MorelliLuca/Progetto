@@ -7,6 +7,7 @@
 #include "graph.hpp"
 #include "plague.hpp"
 
+
 constexpr int sleep_time{1000};  // Tempo trascorso tra la simulazione di un giorno e l'altro
 constexpr int Max_input{1};      // Valore massimo per l'input di gamma e beta
 constexpr int Min_input{0};      // Valore minimo degli input
@@ -42,8 +43,7 @@ int main()
                Simulation::World world{get_parameter()};  // Inizializazione del mondo nella sua configurazione iniziale
                sf::RenderWindow w_grid(sf::VideoMode(Window_side, Window_side), "SIR Simulation");  // Finstra in cui è rappresentata la griglia
                Display::print(w_grid, world);  // Visualizazione a finestra della configurazione iniziale
-               int day{0};                    // Contatore dei giorni già simulati
-               double R0{world.get_beta()/world.get_gamma()};   
+               int day{0};                    // Contatore dei giorni già simulati  
                   while (w_grid.isOpen()) {  // Ciclco che impedisce che il programma termini automaticamente prima della chiusura della finestra
                      sf::Event event;        // Evento utilizzato per rilevare la chiusura della finestra grafica
                      Display::set_status(w_grid, world);  // Funzione che permette di cambiare lo stato di una persona con il mouse
@@ -52,15 +52,15 @@ int main()
                                 sf::Keyboard::Enter)) {  // Rilevazione della perssione del tasto enter per iniziare la simulazione
                               // Inizio stampa della tabella
                               Simulation::print_intestation(world);
-                              Simulation::print_terminal(world, day,R0);
+                              Simulation::print_terminal(world, day);
                               while (!sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) &&
                                      w_grid.isOpen()) {  // Ciclo che continua la simulazione fino alla pressione di esc o alla chisura della finestra
-                                 if(R0<4){Simulation::walk(world);}
+                                 if(world.lockdown_status()==Simulation::Lockdown::OFF){Simulation::walk(world);}
                                  Simulation::World next = Simulation::evolve(world);  // Evoluzione della simulazione di un giorno
                                  Display::print(w_grid, next);      // Visualizazione delle variazioni graficamente
                                  ++day;
-                                 R0=Simulation::eval_R0(world,next);
-                                 Simulation::print_terminal(next, day, R0);  // Stampa a terminale
+                                 next.eval_R0(world);
+                                 Simulation::print_terminal(next, day);  // Stampa a terminale
                                  world = next;
                                  std::this_thread::sleep_for(std::chrono::milliseconds(sleep_time));
                                     while (w_grid.pollEvent(event)) {  // Ciclo che consente la chiusura del programma dalla finestra

@@ -6,6 +6,7 @@
 
 namespace Simulation {
 
+constexpr double medium_R0{3};
 constexpr int Min_virus_distribution{0};  // Valore minimo generato randomicamente per determinare infezione e guarigioni
 constexpr int Max_virus_distribution{1};  // Valore massimo generato randomicamente per determinare infezione e guarigioni
 constexpr int Min_walk_distribution{-1};  // Valore minimo generato randomicamente per consentire alle celle di muoversi
@@ -36,6 +37,8 @@ int I_near(World const& world, int r, int c)  // Funzione che controlla quante p
 Person person_next_status(World const& world, int r, int c)  // Funzione che determina quale sarà il prossimo stato di una persona
 {
    int const near_I{I_near(world, r, c)};  // Numero di infetti vicino alla persona in poszione (r,c)
+      double beta{world.get_beta()};
+      if(world.get_R0()>medium_R0){beta=beta/2;}
       switch (world.person(r, c)) {
          case Person::S:  // Caso persona sana
                if (near_I != 0 && dis_virus(gen) <= (world.get_beta() + (world.get_beta() / Total_near_person) * near_I)) {
@@ -70,23 +73,14 @@ void print_intestation(World const& world)  // Funzione che stampa a terminale l
                 "|  Day  |    S    |    I    |    R    |    R0    |\n";
 }
 
-void print_terminal(World const& world, int day,double R0)  // Funzione che stampa a terminale i risultati della simulazione
+void print_terminal(World const& world, int day)  // Funzione che stampa a terminale i risultati della simulazione
 {
    std::cout << "| " << std::setw(Term_width_day) << day << " | " << std::setw(Term_width_SIR) << world.get_S() << " | " << std::setw(Term_width_SIR)
-             << world.get_I() << " | " << std::setw(Term_width_SIR) << world.get_R() << " | " << std::setw(Term_width_R0) << R0
+             << world.get_I() << " | " << std::setw(Term_width_SIR) << world.get_R() << " | " << std::setw(Term_width_R0) << world.get_R0()
              << " |\n";
 }
 
-double eval_R0(World const& old_world,World const& new_world)
-{
-   double N{static_cast<double>(old_world.get_side()*old_world.get_side()-old_world.get_E())};
-   double new_R{static_cast<double>(new_world.get_R())};
-   double old_R{static_cast<double>(old_world.get_R())};
-   double new_S{static_cast<double>(new_world.get_S())};
-   double old_S{static_cast<double>(old_world.get_S())};
-   if(new_R==old_R){return 0;}
-   return N*(1-new_S/old_S)/(new_R-old_R);
-}
+
 
 void swap(World& world,int r1,int c1,int r2, int c2)
 {

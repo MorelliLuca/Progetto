@@ -55,7 +55,7 @@ int main()
                               Simulation::print_terminal(world, day,R0);
                               while (!sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) &&
                                      w_grid.isOpen()) {  // Ciclo che continua la simulazione fino alla pressione di esc o alla chisura della finestra
-                                 Simulation::walk(world);
+                                 if(R0<4){Simulation::walk(world);}
                                  Simulation::World next = Simulation::evolve(world);  // Evoluzione della simulazione di un giorno
                                  Display::print(w_grid, next);      // Visualizazione delle variazioni graficamente
                                  ++day;

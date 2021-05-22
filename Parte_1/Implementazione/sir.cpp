@@ -7,7 +7,7 @@
 
 namespace Simulation {
 
-constexpr int Term_width_q{5};            //Dimensione colonna quarantena
+constexpr int Term_width_q{6};            //Dimensione colonna quarantena
 constexpr int Term_width_day{5};          // Dimensione colonna day
 constexpr int Term_width_SIR{7};           // Dimensione  colonna S, I e R
 constexpr int Term_width_beta{6};          // Dimensione colonna beta
@@ -24,13 +24,17 @@ Population const Evolve(Population const& initial_population)  // Funzione che d
    double beta{initial_population.Beta()};
    double N{static_cast<double>(initial_population.Total())};
    std::string quar{initial_population.Quarantine()};
-   if (initial_population.I()>=(N/3))
+   if (initial_population.I()>=(N/3)&&quar=="No")
    {
-      beta=beta-0.05*beta;
+      beta=beta/2;
       quar="Yes";
    }
    else{
-      quar="No";
+      if(quar=="Yes"&&initial_population.I()<(N/3))
+      {
+          quar="No";
+          beta=beta*2;
+      } 
    }
    Population next{beta, gamma};
    next.Quarantine()=quar;
@@ -93,15 +97,15 @@ std::vector<Population> Simulate(int T_duration, Population const& initial_popul
 }
 void Print(std::vector<Population> const& simulated)  // Funzione che stampa la tabella con i risultati
 {
-   std::cout << "-----------------------------------------------------------\n"
+   std::cout << "-------------------------------------------------------------------\n"
              << "Simulation        Days: " << simulated.size() - 1 << std::setw(Term_width_intestation) << "        N: " << simulated[0].Total()
              << "\n"
-                "----------------------------------------------------------------\n"
+                "-------------------------------------------------------------------\n"
                 "|  Day  |    S    |    I    |    R    |  Beta  |  Gamma  |  Quar  |\n";
       for (auto it = simulated.begin(); it != simulated.end(); ++it) {
          std::cout << "| " << std::setw(Term_width_day) << std::distance(simulated.begin(), it) << " | " << std::setw(Term_width_SIR) << it->S()
                    << " | " << std::setw(Term_width_SIR) << it->I() << " | " << std::setw(Term_width_SIR) << it->R() << " | "
-                   << std::setw(Term_width_beta) << it->Beta() << " | " << std::setw(Term_width_gamma) << it->Gamma() << "| " << std::setw(Term_width_q) << it->Quarantine() << " |\n";
+                   << std::setw(Term_width_beta) << it->Beta() << " | " << std::setw(Term_width_gamma) << it->Gamma() << " | " << std::setw(Term_width_q) << it->Quarantine() << " |\n";
       }
 }
 

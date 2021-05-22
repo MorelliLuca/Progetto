@@ -8,29 +8,27 @@
 #include "plague.hpp"
 
 constexpr int sleep_time{1000};  // Tempo trascorso tra la simulazione di un giorno e l'altro
-constexpr int Max_input{1};      // Valore massimo per l'input di gamma e beta
-constexpr int Min_input{0};      // Valore minimo degli input
 constexpr int Window_side{400};  // Dimensione finstra grafica
 
 Simulation::World get_parameter()
 {  // Funzione che prende in input i parametri iniziali della simulazione
   int side;
-  double beta, gamma,theta;
-  std::cin >> side >> beta >> gamma>>theta;
+  double beta, gamma, theta;
+  std::cin >> side >> beta >> gamma >> theta;
     // Controlli della coerenza dei dati inseriti con il modello
-    if (beta < Min_input || gamma < Min_input||theta<Min_input) {
+    if (beta < Simulation::World::Data_min || gamma < Simulation::World::Data_min || theta < Simulation::World::Data_min) {
       throw std::invalid_argument{"Beta and gamma can't be less than 0"};
   }
-    if (side <= Min_input) {
+    if (side <= Simulation::World::Data_min) {
       throw std::invalid_argument{"This parameter has to be more than 0"};
   }
-    if (beta > Max_input || gamma > Max_input||theta > Max_input) {
+    if (beta > Simulation::World::Beta_Gamma_Max || gamma > Simulation::World::Beta_Gamma_Max || theta > Simulation::World::Beta_Gamma_Max) {
       throw std::invalid_argument{"Beta and gamma can't be more than 1"};
   }
     if (std::cin.fail()) {
       throw std::invalid_argument{"These parameters have to be numbers"};
   }
-  Simulation::World parameters{side, beta, gamma,theta};
+  Simulation::World parameters{side, beta, gamma, theta};
   return parameters;
 }
 
@@ -41,11 +39,11 @@ int main()
         try {
           Simulation::World world{get_parameter()};  // Inizializazione del mondo nella sua configurazione iniziale
           int time_before_vax;
-          std::cout<<"Insert the time needed to create the vaccine: ";
-          std::cin>>time_before_vax;
-          if (time_before_vax <= Min_input) {
-      throw std::invalid_argument{"This parameter has to be more than 0"};
-  }
+          std::cout << "Insert the time needed to create the vaccine: ";
+          std::cin >> time_before_vax;
+            if (time_before_vax <= Simulation::World::Data_min) {
+              throw std::invalid_argument{"This parameter has to be more than 0"};
+          }
           sf::RenderWindow w_grid(sf::VideoMode(Window_side, Window_side), "SIR Simulation");  // Finstra in cui è rappresentata la griglia
           Display::print(w_grid, world);  // Visualizazione a finestra della configurazione iniziale
           int day{0};                     // Contatore dei giorni già simulati
@@ -62,7 +60,9 @@ int main()
                         if (world.lockdown_status() == Simulation::Lockdown::OFF) {
                           Simulation::walk(world);
                       }
-                      if (day==time_before_vax){world.start_vax();}
+                        if (day == time_before_vax) {
+                          world.start_vax();
+                      }
                       Simulation::World next = Simulation::evolve(world);  // Evoluzione della simulazione di un giorno
                       Display::print(w_grid, next);                        // Visualizazione delle variazioni graficamente
                       ++day;

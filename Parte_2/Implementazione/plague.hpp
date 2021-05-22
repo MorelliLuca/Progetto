@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <iostream>
 #include <vector>
+#include <string>
 
 namespace Simulation {
 
@@ -33,7 +34,6 @@ class World  // Classe che contine i dati del mondo
   Vax vax;
   static constexpr Person Outside_person = Person::E;  // Stato delle persone esterne alla griglia
   static constexpr int Outside_coord{-1};              // Coordinate delle celle esterne nel bordo superiore e di sinistra
-
  public:
   static constexpr double Low_R0{1};
   static constexpr double Medium_R0{3};
@@ -126,9 +126,17 @@ class World  // Classe che contine i dati del mondo
     return std::count_if(grid.begin(), grid.end(), [](Person person) { return person == Person::V; });
   }
 
+  std::string const string_state_mask() const{
+     return (mask==Mask::ON)?"ON":"OFF";
+  }
+
+  std::string const string_state_lockdown() const{
+     return (lockdown==Lockdown::ON)?"ON":"OFF";
+  }
+
   std::vector<int> find_E() const  // Funzione che restituisce un vettore con le coordinate delle celle vuote
   {
-    std::vector<int> result;
+    std::vector<int>  result;
     auto it{grid.begin()};
     while (it != grid.end()) {
       it = std::find(it, grid.end(), Person::E);
@@ -150,6 +158,12 @@ class World  // Classe che contine i dati del mondo
     double new_S{static_cast<double>(get_S())};
     double old_S{static_cast<double>(old_world.get_S())};
     R0 = N * (1 - new_S / old_S) / (new_R - old_R);
+   
+   if(new_R==old_R){
+      R0=N * (1 - new_S / old_S);
+   }
+
+   
     if (R0 > High_R0 && lockdown == Lockdown::OFF) {
       lockdown = Lockdown::ON;
     }
@@ -160,7 +174,7 @@ class World  // Classe che contine i dati del mondo
       mask = Mask::ON;
       beta = beta / Mask_factor;
     }
-    if (R0 < Low_R0 && mask == Mask::ON) {
+   if (R0 < Low_R0 && mask == Mask::ON) {
       mask = Mask::OFF;
       beta = beta * Mask_factor;
     }

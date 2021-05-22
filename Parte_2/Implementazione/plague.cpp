@@ -13,7 +13,7 @@ constexpr int Max_walk_distribution{1};   // Valore massimo generato randomicame
 constexpr double Total_near_person{8};    // Persone limitrofe totali
 constexpr int Term_width_day{5};          // Dimensione colonna day
 constexpr int Term_width_SIR{7};          // Dimensione  colonna S, I e R
-constexpr int Term_width_R0{6};           // Dimensione colonna R0
+constexpr int Term_width_opt{6};           // Dimensione colonna delle opzioni
 
 std::default_random_engine gen{std::random_device{}()};
 std::uniform_real_distribution<double> dis_virus(Min_virus_distribution, Max_virus_distribution);
@@ -66,17 +66,19 @@ World evolve(World const& current_world)  // Funzione che determina la configura
 
 void print_intestation(World const& world)  // Funzione che stampa a terminale l'intestazione della tabella dei dati simulati
 {
-  std::cout << "----------------------------------------------------------\n"
+  std::cout << "--------------------------------------------------------------------\n"
             << "Simulation                N: " << world.get_side() * world.get_side() - world.get_E()
             << "\n"
-               "----------------------------------------------------------\n"
-               "|  Day  |    S    |    I    |    R    |    V    |   R0   |\n";
+               "-------------------------------------------------------------------\n"
+               "|  Day  |    \033[;32mS\033[0m    |    \033[;31mI\033[0m    |    \033[;37mR\033[0m    |    \033[;34mV\033[0m    |  MASK  |  LCKD  |\n";
 }
 
 void print_terminal(World const& world, int day)  // Funzione che stampa a terminale i risultati della simulazione
 {
-  std::cout << "| " << std::setw(Term_width_day) << day << " | " << std::setw(Term_width_SIR) << world.get_S() << " | " << std::setw(Term_width_SIR) << world.get_I() << " | "
-            << std::setw(Term_width_SIR) << world.get_R() << " | " << std::setw(Term_width_SIR) << world.get_V() << " | " << std::setw(Term_width_R0) << world.get_R0() << " |\n";
+  std::cout << "| " << std::setw(Term_width_day) << day << " | " << std::setw(Term_width_SIR) << world.get_S() << " | " 
+            << std::setw(Term_width_SIR) << world.get_I() << " | " << std::setw(Term_width_SIR) << world.get_R() << " | " 
+            << std::setw(Term_width_SIR) << world.get_V() << " | " << std::setw(Term_width_opt) << world.string_state_mask() << " | " 
+            << std::setw(Term_width_opt) << world.string_state_lockdown() << " |\n";
 }
 
 void swap(World& world, int r1, int c1, int r2, int c2)

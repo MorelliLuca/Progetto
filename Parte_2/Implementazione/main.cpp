@@ -36,10 +36,16 @@ Simulation::World get_parameter()
 
 int main()
 {
-  std::cout << "Insert the side of the world, beta, gamma and the ratio of vaccinated per day:";
+  std::cout << "Insert the side of the world, beta, gamma and theta: ";
     while (1) {
         try {
           Simulation::World world{get_parameter()};  // Inizializazione del mondo nella sua configurazione iniziale
+          int time_before_vax;
+          std::cout<<"Insert the time needed to create the vaccine: ";
+          std::cin>>time_before_vax;
+          if (time_before_vax <= Min_input) {
+      throw std::invalid_argument{"This parameter has to be more than 0"};
+  }
           sf::RenderWindow w_grid(sf::VideoMode(Window_side, Window_side), "SIR Simulation");  // Finstra in cui è rappresentata la griglia
           Display::print(w_grid, world);  // Visualizazione a finestra della configurazione iniziale
           int day{0};                     // Contatore dei giorni già simulati
@@ -55,9 +61,9 @@ int main()
                            w_grid.isOpen()) {  // Ciclo che continua la simulazione fino alla pressione di esc o alla chisura della finestra
                         if (world.lockdown_status() == Simulation::Lockdown::OFF) {
                           Simulation::walk(world);
-                        }
+                      }
+                      if (day==time_before_vax){world.start_vax();}
                       Simulation::World next = Simulation::evolve(world);  // Evoluzione della simulazione di un giorno
-                      if (day==100){next.start_vax();}
                       Display::print(w_grid, next);                        // Visualizazione delle variazioni graficamente
                       ++day;
                       next.eval_R0(world);

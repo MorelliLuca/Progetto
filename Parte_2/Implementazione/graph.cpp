@@ -29,6 +29,8 @@ void print(sf::RenderWindow& window, Simulation::World const& world)  // Funzion
                      square.setFillColor(sf::Color::Red);
                   } else if (world.person(r, c) == Simulation::Person::E) {
                      square.setFillColor(sf::Color::Black);
+                  }else if (world.person(r, c) == Simulation::Person::V) {
+                     square.setFillColor(sf::Color::Blue);
                   } else {
                      square.setFillColor(sf::Color::White);
                   }

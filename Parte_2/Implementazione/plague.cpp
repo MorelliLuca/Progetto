@@ -6,7 +6,7 @@
 
 namespace Simulation {
 
-constexpr double medium_R0{3};
+
 constexpr int Min_virus_distribution{0};  // Valore minimo generato randomicamente per determinare infezione e guarigioni
 constexpr int Max_virus_distribution{1};  // Valore massimo generato randomicamente per determinare infezione e guarigioni
 constexpr int Min_walk_distribution{-1};  // Valore minimo generato randomicamente per consentire alle celle di muoversi
@@ -14,7 +14,7 @@ constexpr int Max_walk_distribution{1};  // Valore massimo generato randomicamen
 constexpr double Total_near_person{8};     // Persone limitrofe totali
 constexpr int Term_width_day{5};           // Dimensione colonna day
 constexpr int Term_width_SIR{7};           // Dimensione  colonna S, I e R
-constexpr int Term_width_R0{8};          // Dimensione colonna R0
+constexpr int Term_width_R0{6};          // Dimensione colonna R0
 
 std::default_random_engine gen{std::random_device{}()};
 std::uniform_real_distribution<double> dis_virus(Min_virus_distribution, Max_virus_distribution);
@@ -37,12 +37,13 @@ int I_near(World const& world, int r, int c)  // Funzione che controlla quante p
 Person person_next_status(World const& world, int r, int c)  // Funzione che determina quale sarà il prossimo stato di una persona
 {
    int const near_I{I_near(world, r, c)};  // Numero di infetti vicino alla persona in poszione (r,c)
-      double beta{world.get_beta()};
-      if(world.get_R0()>medium_R0){beta=beta/2;}
       switch (world.person(r, c)) {
          case Person::S:  // Caso persona sana
                if (near_I != 0 && dis_virus(gen) <= (world.get_beta() + (world.get_beta() / Total_near_person) * near_I)) {
                   return Person::I;
+            }else if (world.vax_status()==Vax::ON&&dis_virus(gen)<=world.get_theta())
+            {
+               return Person::V;
             }
             break;
          case Person::I:  // Caso persona infetta
@@ -50,14 +51,14 @@ Person person_next_status(World const& world, int r, int c)  // Funzione che det
                   return Person::R;
             }
             break;
-         default:        // Caso persona rimossa o vuota
+         default:        // Caso persona rimossa o vuota o vaccinata
             break;   
       }
    return world.person(r, c);
 }
 World evolve(World const& current_world)  // Funzione che determina la configurazione successiva della popolazione
 {
-   World next{current_world.get_side(), current_world.get_beta(), current_world.get_gamma()};
+   World next=current_world;
       for (int i = 0; i != current_world.get_side(); ++i) {
             for (int j = 0; j != current_world.get_side(); ++j) { next.person(i, j) = person_next_status(current_world, i, j); }
       }
@@ -66,17 +67,17 @@ World evolve(World const& current_world)  // Funzione che determina la configura
 
 void print_intestation(World const& world)  // Funzione che stampa a terminale l'intestazione della tabella dei dati simulati
 {
-   std::cout << "---------------------------------------------------\n"
+   std::cout << "----------------------------------------------------------\n"
              << "Simulation                N: " << world.get_side() * world.get_side() - world.get_E()
              << "\n"
-                "---------------------------------------------------\n"
-                "|  Day  |    S    |    I    |    R    |    R0    |\n";
+                "----------------------------------------------------------\n"
+                "|  Day  |    S    |    I    |    R    |    V    |   R0   |\n";
 }
 
 void print_terminal(World const& world, int day)  // Funzione che stampa a terminale i risultati della simulazione
 {
    std::cout << "| " << std::setw(Term_width_day) << day << " | " << std::setw(Term_width_SIR) << world.get_S() << " | " << std::setw(Term_width_SIR)
-             << world.get_I() << " | " << std::setw(Term_width_SIR) << world.get_R() << " | " << std::setw(Term_width_R0) << world.get_R0()
+             << world.get_I() << " | " << std::setw(Term_width_SIR) << world.get_R() << " | " << std::setw(Term_width_SIR) << world.get_V() << " | " << std::setw(Term_width_R0) << world.get_R0()
              << " |\n";
 }
 

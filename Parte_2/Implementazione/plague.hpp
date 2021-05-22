@@ -13,11 +13,13 @@ namespace Simulation {
 
 constexpr int Mask_factor{2};
 
-enum class Person { E, S, I, R };  // Enum class degli stati della salute di una persona
+enum class Person { E, S, I, R , V};  // Enum class degli stati della salute di una persona
 
 enum class Mask {OFF, ON};
 
 enum class Lockdown {OFF, ON};
+
+enum class Vax {OFF, ON};
 
 class World  // Classe che contine i dati del mondo
 {
@@ -26,9 +28,11 @@ class World  // Classe che contine i dati del mondo
    Grid grid;                         // Griglia delle persone
    double beta;
    double gamma;
+   double theta;
    double R0;
    Mask mask;
    Lockdown lockdown;
+   Vax vax;
    static constexpr Person Outside_person=Person::E;  // Stato delle persone esterne alla griglia
    static constexpr int Outside_coord{-1};           // Coordinate delle celle esterne nel bordo superiore e di sinistra
    
@@ -39,7 +43,7 @@ class World  // Classe che contine i dati del mondo
    static constexpr double High_R0{4};
    static constexpr int Data_min{0};                    // Valor minimo assunto dai dati
    static constexpr int Beta_Gamma_Max{1};              // Valor massimo assunto da gamma e beta
-   World(int N, double b, double g) : side{N}, grid(N * N, Person::S), beta{b}, gamma{g}, R0{b/g}   // Costruttore
+   World(int N, double b, double g,double t) : side{N}, grid(N * N, Person::S), beta{b}, gamma{g},  theta{t}, R0{b/g}   // Costruttore
    {
       // Condizione necessaria per il senso della simulazione
       assert(beta >= Data_min);
@@ -75,9 +79,11 @@ class World  // Classe che contine i dati del mondo
    int get_side() const { return side; }
    double const& get_beta() const { return beta; }
    double const& get_gamma() const { return gamma; }
+   double const& get_theta() const { return theta; }
    double const& get_R0() const { return R0; }
    Mask mask_status() const {return mask;}
    Lockdown lockdown_status() const {return lockdown;}
+   Vax vax_status() const {return vax;}
    int get_S() const // Conteggio delle persone S
    {
       return std::count_if(grid.begin(),grid.end(),[](Person person){return person==Person::S;});
@@ -93,6 +99,10 @@ class World  // Classe che contine i dati del mondo
    int get_E() const // Conteggio delle persone E
    {
       return std::count_if(grid.begin(),grid.end(),[](Person person){return person==Person::E;});
+   }
+   int get_V() const // Conteggio delle persone V
+   {
+      return std::count_if(grid.begin(),grid.end(),[](Person person){return person==Person::V;});
    }
    
 
@@ -137,7 +147,11 @@ class World  // Classe che contine i dati del mondo
       }
    return R0;
 }
-   
+
+void start_vax()
+{
+   vax=Vax::ON;
+}   
 };
 
 inline bool operator==(World const& left, World const& right)  // Operatore == per la classe World necessario per i test

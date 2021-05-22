@@ -5,12 +5,14 @@
 #include <vector>
 #include "graph.hpp"
 #include "sir.hpp"
+#include <string>
 
 constexpr int Grapic_window_side{400};
 
 Simulation::Population get_parameter()
 {  // Funzione che prende in input i parametri iniziali della simulazione
    double beta, gamma;
+   std::string quarantine = "No";
    Simulation::Data initial_state;
    std::cin >> beta >> gamma >> initial_state.S >> initial_state.I >> initial_state.R;
       // Controlli sui dati inseriti
@@ -27,7 +29,7 @@ Simulation::Population get_parameter()
       if (initial_state.S == Simulation::Data::min && initial_state.I == Simulation::Data::min && initial_state.R == Simulation::Data::min) {
          throw std::invalid_argument{"These parameters can't all be 0"};
    }
-   Simulation::Population population{beta, gamma, initial_state};
+   Simulation::Population population{beta, gamma, initial_state, quarantine};
    return population;
 }
 

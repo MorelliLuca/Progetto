@@ -5,10 +5,21 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
+#include <iomanip>
+
 
 namespace Simulation {
 
-enum class Person { E, S, I, R };  // Enum class degli stati della salute di una persona
+
+constexpr int Mask_factor{2};
+
+enum class Person { E, S, I, R , V};  // Enum class degli stati della salute di una persona
+
+enum class Mask {OFF, ON};
+
+enum class Lockdown {OFF, ON};
+
+enum class Vax {OFF, ON};
 
 class World  // Classe che contine i dati del mondo
 {
@@ -17,13 +28,22 @@ class World  // Classe che contine i dati del mondo
    Grid grid;                         // Griglia delle persone
    double beta;
    double gamma;
-   static constexpr Person outside_person=Person::E;  // Stato delle persone esterne alla griglia
-   static constexpr int Data_min{0};                    // Valor minimo assunto dai dati
-   static constexpr int Beta_Gamma_Max{1};              // Valor massimo assunto da gamma e beta
+   double theta;
+   double R0;
+   Mask mask;
+   Lockdown lockdown;
+   Vax vax;
+   static constexpr Person Outside_person=Person::E;  // Stato delle persone esterne alla griglia
    static constexpr int Outside_coord{-1};           // Coordinate delle celle esterne nel bordo superiore e di sinistra
+   
 
   public:
-   World(int N, double b, double g) : side{N}, grid(N * N, Person::S), beta{b}, gamma{g}  // Costruttore
+  static constexpr double Low_R0{1};
+   static constexpr double Medium_R0{3};
+   static constexpr double High_R0{4};
+   static constexpr int Data_min{0};                    // Valor minimo assunto dai dati
+   static constexpr int Beta_Gamma_Max{1};              // Valor massimo assunto da gamma e beta
+   World(int N, double b, double g,double t) : side{N}, grid(N * N, Person::S), beta{b}, gamma{g},  theta{t}, R0{b/g}   // Costruttore
    {
       // Condizione necessaria per il senso della simulazione
       assert(beta >= Data_min);
@@ -41,7 +61,7 @@ class World  // Classe che contine i dati del mondo
          // Caso in cui si richieda lo stato di una persona appena esterna alla griglia di default R (rimossa)
          // necessario per poter controllare le persone adiacenti ad una persona sul bordo della griglia
          if (r == Outside_coord || c == Outside_coord || r == side || c == side) {
-            return outside_person;
+            return Outside_person;
       }
       int cursor = r * side + c;  // Conversione delle coordinate bidimensionali alla posizione nel vettore grid
       return grid[cursor];
@@ -59,6 +79,11 @@ class World  // Classe che contine i dati del mondo
    int get_side() const { return side; }
    double const& get_beta() const { return beta; }
    double const& get_gamma() const { return gamma; }
+   double const& get_theta() const { return theta; }
+   double const& get_R0() const { return R0; }
+   Mask mask_status() const {return mask;}
+   Lockdown lockdown_status() const {return lockdown;}
+   Vax vax_status() const {return vax;}
    int get_S() const // Conteggio delle persone S
    {
       return std::count_if(grid.begin(),grid.end(),[](Person person){return person==Person::S;});
@@ -75,6 +100,11 @@ class World  // Classe che contine i dati del mondo
    {
       return std::count_if(grid.begin(),grid.end(),[](Person person){return person==Person::E;});
    }
+   int get_V() const // Conteggio delle persone V
+   {
+      return std::count_if(grid.begin(),grid.end(),[](Person person){return person==Person::V;});
+   }
+   
 
    std::vector<int> find_E() const  //Funzione che restituisce un vettore con le coordinate delle celle vuote
    {
@@ -92,6 +122,36 @@ class World  // Classe che contine i dati del mondo
       }
       return result;
    }
+
+   double eval_R0(World const& old_world)
+{
+   double N{static_cast<double>(get_side()*get_side()-get_E())};
+   double new_R{static_cast<double>(get_R())};
+   double old_R{static_cast<double>(old_world.get_R())};
+   double new_S{static_cast<double>(get_S())};
+   double old_S{static_cast<double>(old_world.get_S())};
+   R0=N*(1-new_S/old_S)/(new_R-old_R);
+   if (R0>High_R0 && lockdown==Lockdown::OFF){
+      lockdown=Lockdown::ON;
+      }
+   if (R0<Medium_R0 && lockdown==Lockdown::ON){
+      lockdown=Lockdown::OFF;
+      }
+   if (R0>Medium_R0 && mask==Mask::OFF){
+      mask=Mask::ON;
+       beta=beta/Mask_factor;
+      }
+   if (R0<Low_R0 && mask==Mask::ON){
+      mask=Mask::OFF;
+      beta=beta*Mask_factor;
+      }
+   return R0;
+}
+
+void start_vax()
+{
+   vax=Vax::ON;
+}   
 };
 
 inline bool operator==(World const& left, World const& right)  // Operatore == per la classe World necessario per i test
@@ -118,11 +178,9 @@ Person person_next_status(World const& world, int r, int c);
 
 World evolve(World const& current_world);
 
-void print_terminal(Simulation::World const& world, int day,double R0);
+void print_terminal(Simulation::World const& world, int day);
 
 void print_intestation(World const& world);
-
-double eval_R0(World const& old_world,World const& new_World);
 
 void swap(World& world,int r1,int c1,int r2, int c2);
 

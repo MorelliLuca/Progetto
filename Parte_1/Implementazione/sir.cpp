@@ -3,14 +3,16 @@
 #include <iomanip>
 #include <iostream>
 #include <vector>
+#include <string>
 
 namespace Simulation {
 
-constexpr int Term_width_day{5};           // Dimensione colonna day
+constexpr int Term_width_q{5};            //Dimensione colonna quarantena
+constexpr int Term_width_day{5};          // Dimensione colonna day
 constexpr int Term_width_SIR{7};           // Dimensione  colonna S, I e R
 constexpr int Term_width_beta{6};          // Dimensione colonna beta
 constexpr int Term_width_gamma{7};         // Dimensione colonna gamma
-constexpr int Term_width_intestation{18};  // Dimensione spaziatura intestazione
+constexpr int Term_width_intestation{23};  // Dimensione spaziatura intestazione
 
 constexpr double Approx_term{0.5};  // Termine utilizzato per arrotondare i double a int con lo static_cast
 
@@ -21,7 +23,17 @@ Population const Evolve(Population const& initial_population)  // Funzione che d
    double gamma{initial_population.Gamma()};
    double beta{initial_population.Beta()};
    double N{static_cast<double>(initial_population.Total())};
+   std::string quar{initial_population.Quarantine()};
+   if (initial_population.I()>=(N/3))
+   {
+      beta=beta-0.05*beta;
+      quar="Yes";
+   }
+   else{
+      quar="No";
+   }
    Population next{beta, gamma};
+   next.Quarantine()=quar;
    // Calcolo dei valori successivi di S,I e R
    next.S() = static_cast<int>(initial_population.S() - beta * (initial_population.S() / N) * initial_population.I() + Approx_term);
    assert(next.S() >= Data::min);
@@ -63,7 +75,7 @@ std::vector<Population> Simulate(int T_duration, Population const& initial_popul
    std::vector<Population> result{initial_population};
    result.reserve(T_duration + 1);
       for (int i{Data::min}; i < T_duration; ++i) {
-            // Terminazione della simulazione se le variazioni di popolazione sono troppo piccole per poter esser valutate in seguto alle
+            // Terminazione della simulazione se le variazioni di popolazione sono troppo piccole per poter esser valutate in seguito alle
             // approssimazioni
             if (result[i].I() * result[i].Gamma() <= Simulation::Data::Variation_min &&
                 result[i].Beta() * result[i].S() / result[i].Total() * result[i].I() <= Simulation::Data::Variation_min) {
@@ -84,12 +96,12 @@ void Print(std::vector<Population> const& simulated)  // Funzione che stampa la 
    std::cout << "-----------------------------------------------------------\n"
              << "Simulation        Days: " << simulated.size() - 1 << std::setw(Term_width_intestation) << "        N: " << simulated[0].Total()
              << "\n"
-                "-----------------------------------------------------------\n"
-                "|  Day  |    S    |    I    |    R    |  Beta  |  Gamma  |\n";
+                "----------------------------------------------------------------\n"
+                "|  Day  |    S    |    I    |    R    |  Beta  |  Gamma  |  Quar  |\n";
       for (auto it = simulated.begin(); it != simulated.end(); ++it) {
          std::cout << "| " << std::setw(Term_width_day) << std::distance(simulated.begin(), it) << " | " << std::setw(Term_width_SIR) << it->S()
                    << " | " << std::setw(Term_width_SIR) << it->I() << " | " << std::setw(Term_width_SIR) << it->R() << " | "
-                   << std::setw(Term_width_beta) << it->Beta() << " | " << std::setw(Term_width_gamma) << it->Gamma() << " |\n";
+                   << std::setw(Term_width_beta) << it->Beta() << " | " << std::setw(Term_width_gamma) << it->Gamma() << "| " << std::setw(Term_width_q) << it->Quarantine() << " |\n";
       }
 }
 

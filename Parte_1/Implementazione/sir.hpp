@@ -3,10 +3,11 @@
 
 #include <cassert>
 #include <vector>
+#include <string>
 
 namespace Simulation {
 
-struct Data  // Struct conentente i valori S, I e R
+struct Data  // Struct contenente i valori S, I e R
 {
    int S{0};
    int I{0};
@@ -21,9 +22,10 @@ class Population  // Classe che rappresenta una popolazione
    Data state;  // Dati S I R
    double beta;
    double gamma;
+   std::string quarantine;
 
   public:
-   Population(double b, double g, Data initial_state) : state{initial_state}, beta{b}, gamma{g}
+   Population(double b, double g, Data initial_state, std::string q) : state{initial_state}, beta{b}, gamma{g}, quarantine{q}
    {
       // Condizioni necessarie per il senso della simulazione
       assert(state.I >= Data::min);
@@ -31,8 +33,8 @@ class Population  // Classe che rappresenta una popolazione
       assert(state.S >= Data::min);
       assert(beta >= Data::min);
       assert(gamma >= Data::min);
-      assert(beta <= Max);
-      assert(gamma <= Max);
+      assert(beta <= Data::Max);
+      assert(gamma <= Data::Max);
    }
 
    Population(double b, double g) : beta{b}, gamma{g}
@@ -40,8 +42,8 @@ class Population  // Classe che rappresenta una popolazione
       // Condizioni necessarie per il senso della simulazione
       assert(beta >= Data::min);
       assert(gamma >= Data::min);
-      assert(beta <= Max);
-      assert(gamma <= Max);
+      assert(beta <= Data::Max);
+      assert(gamma <= Data::Max);
    }
 
    // Funzioni membro per accedere ai dati privati
@@ -53,10 +55,13 @@ class Population  // Classe che rappresenta una popolazione
    int const& I() const { return state.I; }
    int const& R() const { return state.R; }
    int Total() const { return state.S + state.I + state.R; }
-   double const& Beta() const { return beta; }
+    double& Beta() { return beta; }
+    double const& Beta() const { return beta; }
    double const& Gamma() const { return gamma; }
+   std::string const& Quarantine() const { return quarantine; }
+   std::string& Quarantine(){ return quarantine; }
 };
-// Dichiarazione free function di sir.cpp
+// Dichiarazione free functions di sir.cpp
 Population const Evolve(Population const& initial_population);
 std::vector<Population> Simulate(int T_duration, Population const& initial_population);
 void Print(std::vector<Population> const& simulated);

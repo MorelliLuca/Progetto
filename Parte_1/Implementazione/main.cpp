@@ -14,7 +14,18 @@ Simulation::Population get_parameter()
   double beta, gamma;
   std::string quarantine = "No";
   Simulation::Data initial_state;
-  std::cin >> beta >> gamma >> initial_state.S >> initial_state.I >> initial_state.R;
+  std::string vax;
+  int n_vax{0};
+  std::cin >> beta >> gamma >> initial_state.S >> initial_state.I >> initial_state.R >> vax;
+ if (vax=="yes")
+  {
+    std::cout << "Insert number of vaccines per day: ";
+    std::cin >> n_vax;
+    if (n_vax<=Simulation::Data::min)
+    {
+      throw std::invalid_argument{"The number of vaccines has to be more than 0"};
+    }
+  } 
   // Controlli sui dati inseriti
   if (initial_state.S < Simulation::Data::min || initial_state.I < Simulation::Data::min || initial_state.R < Simulation::Data::min || beta < Simulation::Data::min ||
       gamma < Simulation::Data::min) {
@@ -29,17 +40,19 @@ Simulation::Population get_parameter()
   if (initial_state.S == Simulation::Data::min && initial_state.I == Simulation::Data::min && initial_state.R == Simulation::Data::min) {
     throw std::invalid_argument{"These parameters can't all be 0"};
   }
-  Simulation::Population population{beta, gamma, initial_state, quarantine};
+  
+  Simulation::Population population{beta, gamma, initial_state, quarantine, n_vax};
   return population;
 }
 
 int main()
 {
-  std::cout << "Insert Beta, Gamma, S, I, R and the time of simulation: ";
+  std::cout << "Insert Beta, Gamma, S, I, R, and if people can get vaccinated (yes/no): ";
   while (1) {
     try {
       Simulation::Population initial_population{get_parameter()};  // Inizializiazione della popoalzione iniziale
-      int simulation_t;                                            // Tempo di simulazione
+      int simulation_t, start_vax{0};
+      std::cout <<"Insert number of days of simulation: ";                                            // Tempo di simulazione
       std::cin >> simulation_t;
       // Controllo sul tempo di simulazione inserito
       if (simulation_t <= Simulation::Data::min) {
@@ -48,8 +61,22 @@ int main()
       if (std::cin.fail()) {
         throw std::invalid_argument{"These parameters have to be numbers"};
       }
+      if (initial_population.N_vax()!=0)
+      {
+        std::cout << "Insert from what day they start vaccinating: ";
+        std::cin >> start_vax;
+        if (simulation_t <= start_vax) {
+        throw std::invalid_argument{"You can't start vaccinating after the end of the simulation"};
+      }
+      if (start_vax < Simulation::Data::min) {
+        throw std::invalid_argument{"This has to be more than 0"};
+      }
+      if (std::cin.fail()) {
+        throw std::invalid_argument{"These parameters have to be numbers"};
+      }
+      }
       // Simulazione
-      std::vector<Simulation::Population> population{Simulation::Simulate(simulation_t, initial_population)};
+      std::vector<Simulation::Population> population{Simulation::Simulate(simulation_t, initial_population, start_vax)};
       // Stampa a terminale dei risulati della simulazione
       Simulation::Print(population);
       sf::RenderWindow w_graph(sf::VideoMode(Grapic_window_side, Grapic_window_side), "SIR Graph");  // Finestra grafica

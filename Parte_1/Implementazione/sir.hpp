@@ -23,9 +23,10 @@ class Population  // Classe che rappresenta una popolazione
   double beta;
   double gamma;
   std::string quarantine;
+  int n_vax;
 
  public:
-  Population(double b, double g, Data initial_state, std::string q) : state{initial_state}, beta{b}, gamma{g}, quarantine{q}
+  Population(double b, double g, Data initial_state, std::string q, int n) : state{initial_state}, beta{b}, gamma{g}, quarantine{q}, n_vax{n}
   {
     // Condizioni necessarie per il senso della simulazione
     assert(state.I >= Data::min);
@@ -72,6 +73,14 @@ class Population  // Classe che rappresenta una popolazione
   {
     return state.R;
   }
+  int& N_vax()
+  {
+    return n_vax;
+  }
+  int const& N_vax() const
+  {
+    return n_vax;
+  }
   int Total() const
   {
     return state.S + state.I + state.R;
@@ -99,7 +108,7 @@ class Population  // Classe che rappresenta una popolazione
 };
 // Dichiarazione free functions di sir.cpp
 Population const Evolve(Population const& initial_population);
-std::vector<Population> Simulate(int T_duration, Population const& initial_population);
+std::vector<Population> Simulate(int T_duration, Population const& initial_population, int Start_vax);
 void Print(std::vector<Population> const& simulated);
 }  // namespace Simulation
 

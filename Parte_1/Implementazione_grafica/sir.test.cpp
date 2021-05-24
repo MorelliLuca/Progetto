@@ -17,7 +17,7 @@ TEST_CASE("Testing Struct Data")
 TEST_CASE("Testing Class Population")
 {
   Simulation::Data data{1, 2, 3};
-  Simulation::Population population{0.1, .2, data, "No"};
+  Simulation::Population population{0.1, .2, data, "No", 0};
   CHECK(population.I() == 2);
   CHECK(population.S() == 1);
   CHECK(population.R() == 3);
@@ -31,7 +31,7 @@ TEST_CASE("Testing evolve function")
   SUBCASE("Beta>Gamma")
   {
     Simulation::Data data{7000, 8000, 1000};
-    Simulation::Population population{0.1, .01, data, "No"};
+    Simulation::Population population{0.1, .01, data, "No", 0};
     Simulation::Population next = Simulation::Evolve(population);
     CHECK(next.Total() == 16000);
     CHECK(next.Beta() == .1);
@@ -43,7 +43,7 @@ TEST_CASE("Testing evolve function")
   SUBCASE("Beta<Gamma")
   {
     Simulation::Data data{7000, 8000, 1000};
-    Simulation::Population population{.03, .3, data, "No"};
+    Simulation::Population population{.03, .3, data, "No", 0};
     Simulation::Population next = Simulation::Evolve(population);
     CHECK(next.Total() == 16000);
     CHECK(next.Beta() == .03);
@@ -55,7 +55,7 @@ TEST_CASE("Testing evolve function")
   SUBCASE("N~S && Beta>Gamma")
   {
     Simulation::Data data{7000, 10, 0};
-    Simulation::Population population{.3, .03, data, "No"};
+    Simulation::Population population{.3, .03, data, "No", 0};
     Simulation::Population next = Simulation::Evolve(population);
     CHECK(next.Total() == 7010);
     CHECK(next.Beta() == .3);
@@ -67,7 +67,7 @@ TEST_CASE("Testing evolve function")
   SUBCASE("N~S && Beta<Gamma")
   {
     Simulation::Data data{7000, 10, 0};
-    Simulation::Population population{.03, .3, data, "No"};
+    Simulation::Population population{.03, .3, data, "No", 0};
     Simulation::Population next = Simulation::Evolve(population);
     CHECK(next.Total() == 7010);
     CHECK(next.Beta() == .03);
@@ -80,8 +80,8 @@ TEST_CASE("Testing evolve function")
 TEST_CASE("Testing Simulate Function")
 {
   Simulation::Data data{7000, 8000, 1000};
-  Simulation::Population initial_population{0.1, .01, data, "No"};
-  std::vector<Simulation::Population> simulated{Simulation::Simulate(10, initial_population)};
+  Simulation::Population initial_population{0.1, .01, data, "No", 0};
+  std::vector<Simulation::Population> simulated{Simulation::Simulate(10, initial_population, 0)};
   CHECK(simulated[0].S() == initial_population.S());
   CHECK(simulated[0].I() == initial_population.I());
   CHECK(simulated[0].R() == initial_population.R());

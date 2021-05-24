@@ -79,15 +79,17 @@ int main()
       std::vector<Simulation::Population> population{Simulation::Simulate(simulation_t, initial_population, start_vax)};
       // Stampa a terminale dei risulati della simulazione
       Simulation::Print(population);
-      sf::RenderWindow w_graph(sf::VideoMode(Graphic_window_side, Graphic_window_side), "SIR Graph");  // Finestra grafica
+      sf::RenderWindow w_graph(sf::VideoMode(Graphic_window_side+105, Graphic_window_side), "SIR Graph");  // Finestra grafica
       w_graph.clear(sf::Color::White);                                                               // Impostazione dello sfondo
       Display::print_R(w_graph, population);                                                         // Stampa grafica del grafico di R
       Display::print_S(w_graph, population);                                                         // Stampa grafica del grafico di S
       Display::print_I(w_graph, population);                                                         // Stampa grafica del grafico di R
       Display::print_axis(w_graph, population);                                                      // Stampa degli assi
+      Display::print_caption(w_graph, population);                                                    //Stampa legenda
       while (w_graph.isOpen()) {                                                                     // Ciclo che evita la terminazione automatica del programma a finestra aperta
         sf::Event event;                                                                             // Evento usato per rilevare la chiusura della finestra grafica
-        while (w_graph.waitEvent(event)) {                                                           // Ciclo utilizzato per chiudere il programma quando viene chiusa la finestra
+        while (w_graph.waitEvent(event)) { 
+                                                         // Ciclo utilizzato per chiudere il programma quando viene chiusa la finestra
           if (event.type == sf::Event::Closed) {
             w_graph.close();
           }

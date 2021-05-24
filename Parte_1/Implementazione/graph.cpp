@@ -16,17 +16,30 @@ void print_I(sf::RenderWindow& window, std::vector<Simulation::Population> const
 {
   double epsilon_x{window.getSize().x / static_cast<double>(data_vector.size())};      // Dimensione in pixel di un giorno
   double epsilon_y{window.getSize().y / static_cast<double>(data_vector[0].Total())};  // Dimensione in pixel di una persona
-  sf::RectangleShape column_bar(sf::Vector2f(epsilon_x, Origin));                      // Colonna che costituisce l'area sottesa al grafico per un piccolo deltax
-  column_bar.setPosition(sf::Vector2f(Origin, window.getSize().y));                    // Pozione iniziale del primo dato del grafico
-  column_bar.setFillColor(sf::Color::Red);                                             // Colore del grafico
+  sf::RectangleShape line(sf::Vector2f(epsilon_x, Origin));                      // Colonna che costituisce l'area sottesa al grafico per un piccolo deltax
+  line.setPosition(sf::Vector2f(Origin, window.getSize().y));                    // Pozione iniziale del primo dato del grafico
+  line.setFillColor(sf::Color::Red);  // Colore del grafico                                        
   // Stampa di una colonna per ogni elemento del vettore nella sua rispettiva posizione
+  //0.1 0.04 500 600 70 no
   for (auto it = data_vector.begin(); it != data_vector.end(); ++it) {
-    column_bar.setSize(sf::Vector2f(epsilon_x, it->I() * epsilon_y));
-    column_bar.move(sf::Vector2f(Origin, -it->I() * epsilon_y));
-    window.draw(column_bar);
+    if(it!=data_vector.begin()&&it->I()<=(it-1)->I())
+    {
+      line.setSize(sf::Vector2f(epsilon_x, 3+epsilon_y*((it-1)->I()-it->I())));
+    }
+    else{
+      if(it!=data_vector.begin()&&it->I()>(it-1)->I())
+    {
+      line.setSize(sf::Vector2f(epsilon_x, 3+epsilon_y*(it->I()-(it-1)->I())));
+    }
+    else{
+      line.setSize(sf::Vector2f(epsilon_x, 7));
+    }  
+    }
+      line.move(sf::Vector2f(Origin, -it->I() * epsilon_y-line.getSize().y));
+    window.draw(line);
     // Correzione dovuta al fatto che l'origine del piano per sfml è in alto a sinitra e non in basso a sinistra
     // Così facendo resetto la posizione sull'asse dell y della colonna per agevolare il movimento verso il giorno successivo
-    column_bar.move(sf::Vector2f(epsilon_x, it->I() * epsilon_y));
+     line.move(sf::Vector2f(epsilon_x, it->I()*epsilon_y+line.getSize().y));
   }
   window.display();
 }
@@ -35,14 +48,26 @@ void print_S(sf::RenderWindow& window, std::vector<Simulation::Population> const
 {
   double epsilon_x{window.getSize().x / static_cast<double>(data_vector.size())};
   double epsilon_y{window.getSize().y / static_cast<double>(data_vector[0].Total())};
-  sf::RectangleShape column_bar(sf::Vector2f(epsilon_x, Origin));
-  column_bar.setPosition(sf::Vector2f(Origin, window.getSize().y));
-  column_bar.setFillColor(sf::Color::Green);
+  sf::RectangleShape line(sf::Vector2f(epsilon_x, Origin));
+  line.setPosition(sf::Vector2f(Origin, window.getSize().y));
+  line.setFillColor(sf::Color::Green);
   for (auto it = data_vector.begin(); it != data_vector.end(); ++it) {
-    column_bar.setSize(sf::Vector2f(epsilon_x, it->S() * epsilon_y));
-    column_bar.move(sf::Vector2f(Origin, -it->S() * epsilon_y));
-    window.draw(column_bar);
-    column_bar.move(sf::Vector2f(epsilon_x, it->S() * epsilon_y));
+    if(it!=data_vector.begin()&&it->S()<=(it-1)->S())
+    {
+      line.setSize(sf::Vector2f(epsilon_x, 3+epsilon_y*((it-1)->S()-it->S())));
+    }
+    else{
+      if(it!=data_vector.begin()&&it->S()>(it-1)->S())
+    {
+      line.setSize(sf::Vector2f(epsilon_x, 3+epsilon_y*(it->S()-(it-1)->S())));
+    }
+    else{
+      line.setSize(sf::Vector2f(epsilon_x, 7));
+    }  
+    }
+    line.move(sf::Vector2f(Origin, -it->S() * epsilon_y-line.getSize().y));
+    window.draw(line);
+    line.move(sf::Vector2f(epsilon_x, it->S() * epsilon_y+line.getSize().y));
   }
   window.display();
 }
@@ -50,14 +75,26 @@ void print_R(sf::RenderWindow& window, std::vector<Simulation::Population> const
 {
   double epsilon_x{window.getSize().x / static_cast<double>(data_vector.size())};
   double epsilon_y{window.getSize().y / static_cast<double>(data_vector[0].Total())};
-  sf::RectangleShape column_bar(sf::Vector2f(epsilon_x, Origin));
-  column_bar.setPosition(sf::Vector2f(Origin, window.getSize().y));
-  column_bar.setFillColor(sf::Color::Cyan);
+  sf::RectangleShape line(sf::Vector2f(epsilon_x, Origin));
+  line.setPosition(sf::Vector2f(Origin, window.getSize().y));
+  line.setFillColor(sf::Color::Cyan);
   for (auto it = data_vector.begin(); it != data_vector.end(); ++it) {
-    column_bar.setSize(sf::Vector2f(epsilon_x, it->R() * epsilon_y));
-    column_bar.move(sf::Vector2f(Origin, -it->R() * epsilon_y));
-    window.draw(column_bar);
-    column_bar.move(sf::Vector2f(epsilon_x, it->R() * epsilon_y));
+    if(it!=data_vector.begin()&&it->R()<=(it-1)->R())
+    {
+      line.setSize(sf::Vector2f(epsilon_x, 3+epsilon_y*((it-1)->R()-it->R())));
+    }
+    else{
+      if(it!=data_vector.begin()&&it->R()>(it-1)->R())
+    {
+      line.setSize(sf::Vector2f(epsilon_x, 3+epsilon_y*(it->R()-(it-1)->R())));
+    }
+    else{
+      line.setSize(sf::Vector2f(epsilon_x, 7));
+    }  
+    }
+    line.move(sf::Vector2f(Origin, -it->R() * epsilon_y-line.getSize().y));
+    window.draw(line);
+    line.move(sf::Vector2f(epsilon_x, it->R() * epsilon_y+line.getSize().y));
   }
   window.display();
 }

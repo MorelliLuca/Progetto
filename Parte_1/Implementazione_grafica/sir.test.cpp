@@ -26,58 +26,7 @@ TEST_CASE("Testing Class Population")
   CHECK(population.Gamma() == .2);
 }
 
-TEST_CASE("Testing evolve function")
-{
-  SUBCASE("Beta>Gamma")
-  {
-    Simulation::Data data{7000, 8000, 1000};
-    Simulation::Population population{0.1, .01, data, "No", 0};
-    Simulation::Population next = Simulation::Evolve(population);
-    CHECK(next.Total() == 16000);
-    CHECK(next.Beta() == .1);
-    CHECK(next.Gamma() == .01);
-    CHECK(next.S() == 6650);
-    CHECK(next.I() == 8270);
-    CHECK(next.R() == 1080);
-  }
-  SUBCASE("Beta<Gamma")
-  {
-    Simulation::Data data{7000, 8000, 1000};
-    Simulation::Population population{.03, .3, data, "No", 0};
-    Simulation::Population next = Simulation::Evolve(population);
-    CHECK(next.Total() == 16000);
-    CHECK(next.Beta() == .03);
-    CHECK(next.Gamma() == .3);
-    CHECK(next.S() == 6895);
-    CHECK(next.I() == 5705);
-    CHECK(next.R() == 3400);
-  }
-  SUBCASE("N~S && Beta>Gamma")
-  {
-    Simulation::Data data{7000, 10, 0};
-    Simulation::Population population{.3, .03, data, "No", 0};
-    Simulation::Population next = Simulation::Evolve(population);
-    CHECK(next.Total() == 7010);
-    CHECK(next.Beta() == .3);
-    CHECK(next.Gamma() == .03);
-    CHECK(next.S() == 6997);
-    CHECK(next.I() == 13);
-    CHECK(next.R() == 0);
-  }
-  SUBCASE("N~S && Beta<Gamma")
-  {
-    Simulation::Data data{7000, 10, 0};
-    Simulation::Population population{.03, .3, data, "No", 0};
-    Simulation::Population next = Simulation::Evolve(population);
-    CHECK(next.Total() == 7010);
-    CHECK(next.Beta() == .03);
-    CHECK(next.Gamma() == .3);
-    CHECK(next.S() == 7000);
-    CHECK(next.I() == 7);
-    CHECK(next.R() == 3);
-  }
-}
-TEST_CASE("Testing Simulate Function")
+TEST_CASE("Testing Simulate Function with quarantine")
 {
   Simulation::Data data{7000, 8000, 1000};
   Simulation::Population initial_population{0.1, .01, data, "No", 0};
@@ -85,7 +34,26 @@ TEST_CASE("Testing Simulate Function")
   CHECK(simulated[0].S() == initial_population.S());
   CHECK(simulated[0].I() == initial_population.I());
   CHECK(simulated[0].R() == initial_population.R());
-  CHECK(simulated[10].S() == 3900);
-  CHECK(simulated[10].I() == 10190);
-  CHECK(simulated[10].R() == 1910);
+  CHECK(simulated[10].Beta() == 0.05);
+  CHECK(simulated[10].Quarantine() == "Yes");
+}
+
+TEST_CASE("Testing with vaccines from the start")
+{
+  Simulation::Data data{7000, 8000, 1000};
+  Simulation::Population initial_population{0.1, .01, data, "No", 2};
+  std::vector<Simulation::Population> simulated{Simulation::Simulate(3, initial_population, 0)};
+  CHECK(simulated[0].N_vax() == 2);
+  CHECK(simulated[1].S() == 6823);
+}
+
+TEST_CASE("Testing with vaccines from day 2")
+{
+  Simulation::Data data{7000, 8000, 1000};
+  Simulation::Population initial_population{0.1, .01, data, "No", 2};
+  std::vector<Simulation::Population> simulated{Simulation::Simulate(3, initial_population, 2)};
+  CHECK(simulated[0].N_vax() == 0);
+  CHECK(simulated[2].N_vax() == 2);
+  CHECK(simulated[1].S() == 6825);
+  CHECK(simulated[2].S() == 6652);
 }

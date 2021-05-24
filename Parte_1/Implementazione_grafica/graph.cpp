@@ -226,7 +226,7 @@ D_box.setOutlineColor(sf::Color::Black);
   label_D_box.setFont(font);
   label_D_box.setCharacterSize(Font_dimension);
   label_D_box.setFillColor(sf::Color::Black);
-  label_D_box.setString(std::to_string(data_vector.size()));
+  label_D_box.setString(std::to_string(data_vector.size()-1));
   float label_D_box_width = label_D_box.getLocalBounds().width;
   label_D_box.setPosition(sf::Vector2f(14+(70-label_D_box_width)/2, 360));
   window.draw(label_D_box);

@@ -11,33 +11,34 @@ constexpr double Line_length{10};     // Lunghezza della linea utilizzata per gl
 constexpr double Font_dimension{10};  // Dimensione del font
 constexpr int Axis_division{10};      // Numero di divisioni delle scale degli assi
 constexpr int Rot_angle{90};          // Angolo utilizzato per le rotazioni
+constexpr int Initial_size {7};       //Altezza prima colonna
+constexpr int Correction_size {3};    //Fattore correttivo delle colonne sucessive alla prima
 
 void print_I(sf::RenderWindow& window, std::vector<Simulation::Population> const& data_vector)  // Stampa del grafico di I
 {
   double epsilon_x{window.getSize().x / static_cast<double>(data_vector.size())};      // Dimensione in pixel di un giorno
   double epsilon_y{window.getSize().y / static_cast<double>(data_vector[0].Total())};  // Dimensione in pixel di una persona
   sf::RectangleShape line(sf::Vector2f(epsilon_x, Origin));                      // Colonna che costituisce l'area sottesa al grafico per un piccolo deltax
-  line.setPosition(sf::Vector2f(Origin, window.getSize().y));                    // Pozione iniziale del primo dato del grafico
+  line.setPosition(sf::Vector2f(Origin, window.getSize().y));                    // Posizione iniziale del primo dato del grafico
   line.setFillColor(sf::Color::Red);  // Colore del grafico                                        
   // Stampa di una colonna per ogni elemento del vettore nella sua rispettiva posizione
-  //0.1 0.04 500 600 70 no
   for (auto it = data_vector.begin(); it != data_vector.end(); ++it) {
-    if(it!=data_vector.begin()&&it->I()<=(it-1)->I())
+    if(it!=data_vector.begin()&&it->I()<=(it-1)->I())//Dimensioni della colonna se il dato precedente era maggiore o uguale
     {
-      line.setSize(sf::Vector2f(epsilon_x, 3+epsilon_y*((it-1)->I()-it->I())));
+      line.setSize(sf::Vector2f(epsilon_x, Correction_size+epsilon_y*((it-1)->I()-it->I())));//l'altezza è data da 3 pixel più la differenza tra gli infetti, in modo da ridurre gli spazi bianchi
     }
     else{
       if(it!=data_vector.begin()&&it->I()>(it-1)->I())
     {
-      line.setSize(sf::Vector2f(epsilon_x, 3+epsilon_y*(it->I()-(it-1)->I())));
+      line.setSize(sf::Vector2f(epsilon_x, Correction_size+epsilon_y*(it->I()-(it-1)->I())));
     }
     else{
-      line.setSize(sf::Vector2f(epsilon_x, 7));
+      line.setSize(sf::Vector2f(epsilon_x, Initial_size)); //Dimensioni della prima colonna
     }  
     }
       line.move(sf::Vector2f(Origin, -it->I() * epsilon_y-line.getSize().y));
     window.draw(line);
-    // Correzione dovuta al fatto che l'origine del piano per sfml è in alto a sinitra e non in basso a sinistra
+    // Correzione dovuta al fatto che l'origine del piano per sfml è in alto a sinistra e non in basso a sinistra
     // Così facendo resetto la posizione sull'asse dell y della colonna per agevolare il movimento verso il giorno successivo
      line.move(sf::Vector2f(epsilon_x, it->I()*epsilon_y+line.getSize().y));
   }
@@ -54,15 +55,15 @@ void print_S(sf::RenderWindow& window, std::vector<Simulation::Population> const
   for (auto it = data_vector.begin(); it != data_vector.end(); ++it) {
     if(it!=data_vector.begin()&&it->S()<=(it-1)->S())
     {
-      line.setSize(sf::Vector2f(epsilon_x, 3+epsilon_y*((it-1)->S()-it->S())));
+      line.setSize(sf::Vector2f(epsilon_x, Correction_size+epsilon_y*((it-1)->S()-it->S())));
     }
     else{
       if(it!=data_vector.begin()&&it->S()>(it-1)->S())
     {
-      line.setSize(sf::Vector2f(epsilon_x, 3+epsilon_y*(it->S()-(it-1)->S())));
+      line.setSize(sf::Vector2f(epsilon_x, Correction_size+epsilon_y*(it->S()-(it-1)->S())));
     }
     else{
-      line.setSize(sf::Vector2f(epsilon_x, 7));
+      line.setSize(sf::Vector2f(epsilon_x, Initial_size));
     }  
     }
     line.move(sf::Vector2f(Origin, -it->S() * epsilon_y-line.getSize().y));
@@ -81,15 +82,15 @@ void print_R(sf::RenderWindow& window, std::vector<Simulation::Population> const
   for (auto it = data_vector.begin(); it != data_vector.end(); ++it) {
     if(it!=data_vector.begin()&&it->R()<=(it-1)->R())
     {
-      line.setSize(sf::Vector2f(epsilon_x, 3+epsilon_y*((it-1)->R()-it->R())));
+      line.setSize(sf::Vector2f(epsilon_x, Correction_size+epsilon_y*((it-1)->R()-it->R())));
     }
     else{
       if(it!=data_vector.begin()&&it->R()>(it-1)->R())
     {
-      line.setSize(sf::Vector2f(epsilon_x, 3+epsilon_y*(it->R()-(it-1)->R())));
+      line.setSize(sf::Vector2f(epsilon_x, Correction_size+epsilon_y*(it->R()-(it-1)->R())));
     }
     else{
-      line.setSize(sf::Vector2f(epsilon_x, 7));
+      line.setSize(sf::Vector2f(epsilon_x, Initial_size));
     }  
     }
     line.move(sf::Vector2f(Origin, -it->R() * epsilon_y-line.getSize().y));

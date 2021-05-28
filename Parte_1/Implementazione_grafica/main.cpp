@@ -7,7 +7,8 @@
 #include "graph.hpp"
 #include "sir.hpp"
 
-constexpr int Graphic_window_side{400};
+constexpr int Graphic_window_side{400}; //Dimensione del lato del grafico
+constexpr int Space_caption{100}; //Larghezza della legenda
 
 Simulation::Population get_parameter()
 {  // Funzione che prende in input i parametri iniziali della simulazione
@@ -79,7 +80,7 @@ int main()
       std::vector<Simulation::Population> population{Simulation::Simulate(simulation_t, initial_population, start_vax)};
       // Stampa a terminale dei risulati della simulazione
       Simulation::Print(population);
-      sf::RenderWindow w_graph(sf::VideoMode(Graphic_window_side+105, Graphic_window_side), "SIR Graph");  // Finestra grafica
+      sf::RenderWindow w_graph(sf::VideoMode(Graphic_window_side+Space_caption+5, Graphic_window_side), "SIR Graph");  // Finestra grafica
       w_graph.clear(sf::Color::White);                                                               // Impostazione dello sfondo
       Display::print_R(w_graph, population);                                                         // Stampa grafica del grafico di R
       Display::print_S(w_graph, population);                                                         // Stampa grafica del grafico di S

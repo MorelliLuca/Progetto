@@ -11,6 +11,10 @@ void print(sf::RenderWindow& window, Simulation::World const& world);
 
 void set_status(sf::RenderWindow& window, Simulation::World& world);
 
+void option(Simulation::World &world,sf::Event &event,sf::RenderWindow &window);
+
+void opt_screen_print(sf::RenderWindow &window,Simulation::World &world);
+
 }  // namespace Display
 
 #endif

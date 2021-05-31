@@ -162,22 +162,6 @@ class World  // Classe che contine i dati del mondo
    if(new_R==old_R){
       R0=N * (1 - new_S / old_S);
    }
-
-   
-    if (R0 > High_R0 && lockdown == Lockdown::OFF) {
-      lockdown = Lockdown::ON;
-    }
-    if (R0 < Medium_R0 && lockdown == Lockdown::ON) {
-      lockdown = Lockdown::OFF;
-    }
-    if (R0 > Medium_R0 && mask == Mask::OFF) {
-      mask = Mask::ON;
-      beta = beta / Mask_factor;
-    }
-   if (R0 < Low_R0 && mask == Mask::ON) {
-      mask = Mask::OFF;
-      beta = beta * Mask_factor;
-    }
     return R0;
   }
 
@@ -185,6 +169,30 @@ class World  // Classe che contine i dati del mondo
   {
     vax = Vax::ON;
   }
+
+  void change_mask()
+  {
+    if(mask==Mask::ON)
+    {
+      mask=Mask::OFF;
+    }else
+    {
+      mask=Mask::ON;
+    }
+  }
+
+  void change_lockdown()
+  {
+    if(lockdown==Lockdown::ON)
+    {
+      lockdown=Lockdown::OFF;
+    }else
+    {
+      lockdown=Lockdown::ON;
+    }
+  }
+
+  
 };
 
 inline bool operator==(World const& left, World const& right)  // Operatore == per la classe World necessario per i test

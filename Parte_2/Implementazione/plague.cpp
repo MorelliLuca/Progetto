@@ -35,9 +35,14 @@ int I_near(World const& world, int r, int c)  // Funzione che controlla quante p
 Person person_next_status(World const& world, int r, int c)  // Funzione che determina quale sarà il prossimo stato di una persona
 {
   int const near_I{I_near(world, r, c)};  // Numero di infetti vicino alla persona in poszione (r,c)
+  double beta{world.get_beta()};
+  if(world.mask_status()==Simulation::Mask::ON)
+  {
+    beta=beta/2;
+  }
   switch (world.person(r, c)) {
     case Person::S:  // Caso persona sana
-      if (near_I != 0 && dis_virus(gen) <= (world.get_beta() + (world.get_beta() / Total_near_person) * near_I)) {
+      if (near_I != 0 && dis_virus(gen) <= (beta + (beta / Total_near_person) * near_I)) {
         return Person::I;
       } else if (world.vax_status() == Vax::ON && dis_virus(gen) <= world.get_theta()) {
         return Person::V;

@@ -7,8 +7,8 @@
 #include "graph.hpp"
 #include "plague.hpp"
 
-constexpr int sleep_time{1000};  // Tempo trascorso tra la simulazione di un giorno e l'altro
-constexpr int Window_side{400};  // Dimensione finstra grafica
+constexpr int sleep_time{1000};      // Tempo trascorso tra la simulazione di un giorno e l'altro
+constexpr int Window_side{400};      // Dimensione finstra grafica
 constexpr int Window_opt_side{200};  // Dimensione finstra grafica
 
 Simulation::World get_parameter()
@@ -38,7 +38,7 @@ int main()
   std::cout << "Insert the side of the world, beta, gamma and theta: ";
   while (1) {
     try {
-      Simulation::World world{get_parameter()};  // Inizializazione del mondo nella sua configurazione iniziale
+      Simulation::World world{get_parameter()};                                            // Inizializazione del mondo nella sua configurazione iniziale
       sf::RenderWindow w_grid(sf::VideoMode(Window_side, Window_side), "SIR Simulation");  // Finstra in cui è rappresentata la griglia
       Display::print(w_grid, world);                                                       // Visualizazione a finestra della configurazione iniziale
       int day{0};                                                                          // Contatore dei giorni già simulati
@@ -52,18 +52,17 @@ int main()
           Simulation::print_terminal(world, day);
 
           sf::RenderWindow opt_screen(sf::VideoMode(Window_opt_side, Window_opt_side), "Option control panel");
-          Display::opt_screen_print(opt_screen,world);
-          while (opt_screen.isOpen() &&
-                 w_grid.isOpen()) {  // Ciclo che continua la simulazione fino alla pressione di esc o alla chisura della finestra
+          Display::opt_screen_print(opt_screen, world);
+          while (opt_screen.isOpen() && w_grid.isOpen()) {  // Ciclo che continua la simulazione fino alla pressione di esc o alla chisura della finestra
             if (world.lockdown_status() == Simulation::Lockdown::OFF) {
               Simulation::walk(world);
             }
-            
+
             Simulation::World next = Simulation::evolve(world);  // Evoluzione della simulazione di un giorno
             Display::print(w_grid, next);                        // Visualizazione delle variazioni graficamente
             ++day;
             next.eval_R0(world);
-            
+
             Simulation::print_terminal(next, day);  // Stampa a terminale
             world = next;
             std::this_thread::sleep_for(std::chrono::milliseconds(sleep_time));
@@ -71,13 +70,11 @@ int main()
               if (event.type == sf::Event::Closed) {
                 opt_screen.close();
               }
-            
-              Display::option(world,event,opt_screen);
-              
+
+              Display::option(world, event, opt_screen);
             }
-            while(w_grid.pollEvent(event)){
-              if (event.type==sf::Event::Closed)
-              {
+            while (w_grid.pollEvent(event)) {
+              if (event.type == sf::Event::Closed) {
                 opt_screen.close();
                 w_grid.close();
               }

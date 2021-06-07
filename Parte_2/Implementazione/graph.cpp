@@ -13,6 +13,13 @@ constexpr int Sleep_time{200};     // Tempo di attesa tra la rilevazione di un c
 constexpr int Margin{10};
 constexpr int Font_dimension{15};
 constexpr int Box_size{35};
+constexpr double Graph_line_width{1};       // Spessore della linea utilizzata per gli assi
+constexpr double Graph_line_length{10};     // Lunghezza della linea utilizzata per gli assi
+constexpr double Graph_font_dimension{10};  // Dimensione del font
+constexpr int Axis_division{10};      // Numero di divisioni delle scale degli assi
+constexpr int Rot_angle{90};          // Angolo utilizzato per le rotazioni
+constexpr int Initial_size {7};       //Altezza prima colonna
+constexpr int Correction_size {3};    //Fattore correttivo delle colonne sucessive alla prima
 
 double person_size(sf::RenderWindow const& window, Simulation::World const& world)  // Funzione che calcola la dimesione di una cella
 {
@@ -167,8 +174,166 @@ void option(Simulation::World& world, sf::Event& event, sf::RenderWindow& window
       }
 
       opt_screen_print(window, world);
+     }
+   }
+ }
+void print_I(sf::RenderWindow& window, std::vector<Simulation::World> const& data_vector)  // Stampa del grafico di I
+{
+  double epsilon_x{(window.getSize().x) / static_cast<double>(data_vector.size())};      // Dimensione in pixel di un giorno
+  double epsilon_y{(window.getSize().y) / static_cast<double>(data_vector[0].get_side()*data_vector[0].get_side())};  // Dimensione in pixel di una persona
+  sf::RectangleShape line(sf::Vector2f(epsilon_x, Origin));                      // Colonna con spessore ridotto per un piccolo deltax
+  line.setPosition(sf::Vector2f(Origin, window.getSize().y));                    // Posizione iniziale del primo dato del grafico
+  line.setFillColor(sf::Color::Red);  // Colore del grafico                                        
+  // Stampa di una colonna per ogni elemento del vettore nella sua rispettiva posizione
+  for (auto it = data_vector.begin(); it != data_vector.end(); ++it) {
+    if(it!=data_vector.begin()&&it->get_I()<=(it-1)->get_I()) //Dimensioni della colonna se il dato precedente era maggiore o uguale
+    {
+      line.setSize(sf::Vector2f(epsilon_x, Correction_size+epsilon_y*((it-1)->get_I()-it->get_I()))); //l'altezza è data da 3 pixel più la differenza tra gli infetti, in modo da ridurre gli spazi bianchi
     }
+    else if(it!=data_vector.begin()&&it->get_I()>(it-1)->get_I()) //Dimensioni della colonna se il dato precedente era minore
+    {
+      line.setSize(sf::Vector2f(epsilon_x, Correction_size+epsilon_y*(it->get_I()-(it-1)->get_I())));
+    }
+    else{
+      line.setSize(sf::Vector2f(epsilon_x, Initial_size));//Dimensioni della prima colonna
+    }  
+    
+      line.move(sf::Vector2f(Origin, -it->get_I() * epsilon_y-line.getSize().y));
+    window.draw(line);
+    // Correzione dovuta al fatto che l'origine del piano per sfml è in alto a sinistra e non in basso a sinistra
+    // Così facendo resetto la posizione sull'asse dell y della colonna per agevolare il movimento verso il giorno successivo
+     line.move(sf::Vector2f(epsilon_x, it->get_I()*epsilon_y+line.getSize().y));
   }
+  window.display();
 }
-}  // namespace Display
-   // namespace Display
+// Le due funzioni a seguire stampano il grafico di S e R e funzionano in maniera del tutto analoga a quella precedente
+void print_S(sf::RenderWindow& window, std::vector<Simulation::World> const& data_vector)
+{
+  double epsilon_x{(window.getSize().x) / static_cast<double>(data_vector.size())};
+  double epsilon_y{window.getSize().y / static_cast<double>(data_vector[0].get_side()*data_vector[0].get_side())};
+  sf::RectangleShape line(sf::Vector2f(epsilon_x, Origin));
+  line.setPosition(sf::Vector2f(Origin, window.getSize().y));
+  line.setFillColor(sf::Color::Green);
+  for (auto it = data_vector.begin(); it != data_vector.end(); ++it) {
+    if(it!=data_vector.begin()&&it->get_S()<=(it-1)->get_S())
+    {
+      line.setSize(sf::Vector2f(epsilon_x, Correction_size+epsilon_y*((it-1)->get_S()-it->get_S())));
+    }
+    else if(it!=data_vector.begin()&&it->get_S()>(it-1)->get_S())
+    {
+      line.setSize(sf::Vector2f(epsilon_x, Correction_size+epsilon_y*(it->get_S()-(it-1)->get_S())));
+    }
+    else{
+      line.setSize(sf::Vector2f(epsilon_x, Initial_size));
+    }  
+    line.move(sf::Vector2f(Origin, -it->get_S() * epsilon_y-line.getSize().y));
+    window.draw(line);
+    line.move(sf::Vector2f(epsilon_x, it->get_S() * epsilon_y+line.getSize().y));
+  }
+  window.display();
+}
+void print_R(sf::RenderWindow& window, std::vector<Simulation::World> const& data_vector)
+{
+  double epsilon_x{(window.getSize().x) / static_cast<double>(data_vector.size())};
+  double epsilon_y{window.getSize().y / static_cast<double>(data_vector[0].get_side()*data_vector[0].get_side())};
+  sf::RectangleShape line(sf::Vector2f(epsilon_x, Origin));
+  line.setPosition(sf::Vector2f(Origin, window.getSize().y));
+  line.setFillColor(sf::Color::Cyan);
+  for (auto it = data_vector.begin(); it != data_vector.end(); ++it) {
+    if(it!=data_vector.begin()&&it->get_R()<=(it-1)->get_R())
+    {
+      line.setSize(sf::Vector2f(epsilon_x, Correction_size+epsilon_y*((it-1)->get_R()-it->get_R())));
+    }
+    else if(it!=data_vector.begin()&&it->get_R()>(it-1)->get_R())
+    {
+      line.setSize(sf::Vector2f(epsilon_x, Correction_size+epsilon_y*(it->get_R()-(it-1)->get_R())));
+    }
+    else{
+      line.setSize(sf::Vector2f(epsilon_x, Initial_size));
+    }  
+    line.move(sf::Vector2f(Origin, -it->get_R() * epsilon_y-line.getSize().y));
+    window.draw(line);
+    line.move(sf::Vector2f(epsilon_x, it->get_R() * epsilon_y+line.getSize().y));
+  }
+  window.display();
+}
+
+void print_V(sf::RenderWindow& window, std::vector<Simulation::World> const& data_vector)
+{
+  double epsilon_x{(window.getSize().x) / static_cast<double>(data_vector.size())};
+  double epsilon_y{window.getSize().y / static_cast<double>(data_vector[0].get_side()*data_vector[0].get_side())};
+  sf::RectangleShape line(sf::Vector2f(epsilon_x, Origin));
+  line.setPosition(sf::Vector2f(Origin, window.getSize().y));
+  line.setFillColor(sf::Color::Blue);
+  for (auto it = data_vector.begin(); it != data_vector.end(); ++it) {
+    if(it!=data_vector.begin()&&it->get_V()<=(it-1)->get_V())
+    {
+      line.setSize(sf::Vector2f(epsilon_x, Correction_size+epsilon_y*((it-1)->get_V()-it->get_V())));
+    }
+    else if(it!=data_vector.begin()&&it->get_V()>(it-1)->get_V())
+    {
+      line.setSize(sf::Vector2f(epsilon_x, Correction_size+epsilon_y*(it->get_V()-(it-1)->get_V())));
+    }
+    else{
+      line.setSize(sf::Vector2f(epsilon_x, Initial_size));
+    }  
+    line.move(sf::Vector2f(Origin, -it->get_V() * epsilon_y-line.getSize().y));
+    window.draw(line);
+    line.move(sf::Vector2f(epsilon_x, it->get_V() * epsilon_y+line.getSize().y));
+  }
+  window.display();
+}
+void print_axis(sf::RenderWindow& window, std::vector<Simulation::World> const& data_vector)  // Stampa degli assi del grafico
+{
+  sf::RectangleShape line(sf::Vector2f(Graph_line_length, Graph_line_width));  // Linea utilizzata per la scala
+  // Caricamento del font utilizzato per stampare le etichette degli assi
+  sf::Font font;
+  if (!font.loadFromFile("font.ttf")) {
+    throw std::runtime_error{"Font was not loaded correctly"};
+  }  // Controllo sul corretto caricamento del font
+  // Creazione dell'etichetta e impostazione di questa
+  sf::Text label;
+  label.setFont(font);
+  label.setCharacterSize(Graph_font_dimension);
+  label.setFillColor(sf::Color::Black);
+  line.setFillColor(sf::Color::Black);
+  label.setString("N");  // Etichetta asse y
+  label.setPosition(sf::Vector2f(Origin, Origin));
+  window.draw(label);
+  // Stampa della scala asse Y
+  for (int i{1}; i < Axis_division; ++i) {
+    line.setPosition(sf::Vector2f(Origin, i * window.getSize().y / Axis_division));
+    window.draw(line);
+    label.setString(std::to_string(data_vector[0].get_side()*data_vector[0].get_side() / Axis_division * (Axis_division - i)));
+    label.setPosition(sf::Vector2f(Graph_line_length, i * window.getSize().y / Axis_division - Graph_font_dimension / 2));
+    window.draw(label);
+  }
+  label.setString("0");  // Etichetta origine
+  label.setPosition(sf::Vector2f(Origin, window.getSize().y - Graph_font_dimension));
+  window.draw(label);
+  line.rotate(Rot_angle);  // Rotazione di 90° necessaria per stmpare la scala sull'asse x
+                           // Stampa della scalla asse x
+  for (int i{1}; i < Axis_division; ++i) {
+    line.setPosition(sf::Vector2f((i * (window.getSize().x) / Axis_division), window.getSize().y - Graph_line_length));
+    window.draw(line);
+    label.setString(std::to_string(data_vector.size() / Axis_division * i));
+    label.setPosition(sf::Vector2f((i * (window.getSize().x) / Axis_division - Graph_font_dimension / 2), window.getSize().y - Graph_line_length - Graph_font_dimension));
+    window.draw(label);
+  }
+  label.setString("Day");  // Etichetta asse x
+  label.setPosition(sf::Vector2f(window.getSize().x - Graph_line_length - Graph_font_dimension, window.getSize().y - Graph_font_dimension));
+  window.draw(label);
+  window.display();
+}
+
+void print_graph(sf::RenderWindow &window, std::vector<Simulation::World> const& data_vector)
+{
+  window.clear(sf::Color::White);
+  print_V(window,data_vector);
+  print_S(window,data_vector);
+  print_R(window,data_vector);
+  print_I(window,data_vector);
+  print_axis(window,data_vector);
+
+}
+}

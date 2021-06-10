@@ -4,16 +4,17 @@
 #include <limits>
 #include <stdexcept>
 #include <thread>
+#include <vector>
 #include "graph.hpp"
 #include "plague.hpp"
-#include <vector>
 
-constexpr int sleep_time{500};      // Tempo trascorso tra la simulazione di un giorno e l'altro
+constexpr int sleep_time{750};       // Tempo trascorso tra la simulazione di un giorno e l'altro
 constexpr int Window_side{400};      // Dimensione finstra grafica
 constexpr int Window_opt_side{200};  // Dimensione finstra grafica
 
+// Funzione che prende in input i parametri iniziali della simulazione
 Simulation::World get_parameter()
-{  // Funzione che prende in input i parametri iniziali della simulazione
+{
   int side;
   double beta, gamma, theta;
   std::cin >> side >> beta >> gamma >> theta;
@@ -39,60 +40,65 @@ int main()
   std::cout << "Insert the side of the world, beta, gamma and theta: ";
   while (1) {
     try {
-      Simulation::World world{get_parameter()};                                            // Inizializazione del mondo nella sua configurazione iniziale
-      sf::RenderWindow w_grid(sf::VideoMode(Window_side, Window_side), "SIR Simulation");  // Finstra in cui è rappresentata la griglia
-      Display::print(w_grid, world);                                                       // Visualizazione a finestra della configurazione iniziale
-      int day{0};                                                // Contatore dei giorni già simulati
-      std::vector<Simulation::World> world_history;
-      sf::RenderWindow graph_screen(sf::VideoMode(Window_side,Window_side),"History Graph");                          
-      while (w_grid.isOpen()) {                                 // Ciclco che impedisce che il programma termini automaticamente prima della chiusura della finestra
-        sf::Event event;                                        // Evento utilizzato per rilevare la chiusura della finestra grafica
-        Display::set_status(w_grid, world);                     // Funzione che permette di cambiare lo stato di una persona con il mouse
-        Display::print(w_grid, world);                          // Visualizazione dello stato modificato della popolazione
+      Simulation::World world{get_parameter()};                                                 // Inizializazione del mondo nella sua configurazione iniziale
+      sf::RenderWindow grid_screen(sf::VideoMode(Window_side, Window_side), "SIR Simulation");  // Finstra in cui è rappresentata la griglia
+      Display::print(grid_screen, world);                                                       // Visualizazione a finestra della configurazione iniziale
+      int day{0};                                                                               // Contatore dei giorni già simulati
+      std::vector<Simulation::World> world_history;                                             // Vettore di tutti gli stati del mondo generati per poter stampare il grafico
+      sf::RenderWindow graph_screen(sf::VideoMode(Window_side, Window_side), "History Graph");  // Finestra del grafico
+      // Ciclco che impedisce che il programma termini automaticamente prima della chiusura della finestra
+      while (grid_screen.isOpen()) {
+        sf::Event event;                          // Evento utilizzato per rilevare la chiusura della finestra grafica e i click
+        Display::set_status(grid_screen, world);  // Funzione che permette di cambiare lo stato di una persona con il mouse
+        Display::print(grid_screen, world);       // Visualizazione dello stato modificato della popolazione
+        // Inizio Simulazione
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {  // Rilevazione della perssione del tasto enter per iniziare la simulazione
           // Inizio stampa della tabella
-          Simulation::print_intestation(world);
-          Simulation::print_terminal(world, day);
-          world_history.push_back(world);
-          sf::RenderWindow opt_screen(sf::VideoMode(Window_opt_side, Window_opt_side), "Option control panel");
+          Simulation::print_intestation(world);                                                                  // Stampa intestazione
+          Simulation::print_terminal(world, day);                                                                // Stampa dati iniziali
+          world_history.push_back(world);                                                                        // Aggiunta al vettore lo stato iniziale
+          sf::RenderWindow opt_screen(sf::VideoMode(Window_opt_side, Window_opt_side), "Option control panel");  // Finestra delle opzioni
           Display::opt_screen_print(opt_screen, world);
-          while (opt_screen.isOpen() && w_grid.isOpen()) {  // Ciclo che continua la simulazione fino alla pressione di esc o alla chisura della finestra
+          // Ciclo che continua la simulazione fino alla pressione di esc o alla chisura della finestra
+          while (opt_screen.isOpen() && grid_screen.isOpen()) {
+            // Funzione che gestisce il random walk se non c'è il lockdown
             if (world.lockdown_status() == Simulation::Lockdown::OFF) {
               Simulation::walk(world);
             }
+            // Evoluzione della simulazione di un giorno
+            ++day;  // Variazione del giorno
+            Simulation::World next = Simulation::evolve(world);
+            Display::print(grid_screen, next);  // Visualizazione delle variazioni graficamente
 
-            Simulation::World next = Simulation::evolve(world);  // Evoluzione della simulazione di un giorno
-            Display::print(w_grid, next);                        // Visualizazione delle variazioni graficamente
-            ++day;
-            next.eval_R0(world);
+            Simulation::print_terminal(next, day);              // Stampa a terminale
+            world_history.push_back(next);                      // Aggiunta al vettore del nuovo stato
+            Display::print_graph(graph_screen, world_history);  // Stampa del grafico
 
-            Simulation::print_terminal(next, day);  // Stampa a terminale
-            world_history.push_back(next);
-            Display::print_graph(graph_screen,world_history);
-            
             world = next;
-            
+
             std::this_thread::sleep_for(std::chrono::milliseconds(sleep_time));
-            while (opt_screen.pollEvent(event)) {  // Ciclo che consente la chiusura del programma dalla finestra
-              if (event.type == sf::Event::Closed) {
+            // Ciclo degli eventi della finestra delle opzioni
+            while (opt_screen.pollEvent(event)) {
+              if (event.type == sf::Event::Closed) {  // Chiususra della finesta delle opzioni
                 opt_screen.close();
               }
 
-              Display::option(world, event, opt_screen);
+              Display::option(world, event, opt_screen);  // Controllo sulla variazione delle opzioni
             }
-            while (w_grid.pollEvent(event)) {
-              if (event.type == sf::Event::Closed) {
+            // Ciclo di controllo degli eventi della finstra con la griglia
+            while (grid_screen.pollEvent(event)) {
+              if (event.type == sf::Event::Closed) {  // Chiusura del programma
                 opt_screen.close();
-                w_grid.close();
+                grid_screen.close();
                 graph_screen.close();
               }
             }
           }
         }
-
-        while (w_grid.pollEvent(event)) {  // Ciclo che consente la chiusura del programma dalla finestra
-          if (event.type == sf::Event::Closed){ 
-            w_grid.close();
+        // Ciclo di controllo degli eventi della finstra con la griglia
+        while (grid_screen.pollEvent(event)) {
+          if (event.type == sf::Event::Closed) {  // Chiusura del programma
+            grid_screen.close();
             graph_screen.close();
           }
         }

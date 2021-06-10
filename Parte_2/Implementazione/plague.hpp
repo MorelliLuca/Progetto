@@ -5,8 +5,8 @@
 #include <cassert>
 #include <iomanip>
 #include <iostream>
-#include <vector>
 #include <string>
+#include <vector>
 
 namespace Simulation {
 
@@ -14,33 +14,33 @@ constexpr int Mask_factor{2};
 
 enum class Person { E, S, I, R, V };  // Enum class degli stati della salute di una persona
 
-enum class Mask { OFF, ON };
+enum class Mask { OFF, ON };  // Enum dello stato di uso delle mascherine
 
-enum class Lockdown { OFF, ON };
+enum class Lockdown { OFF, ON };  // Enum dello stato del lockdown
 
-enum class Vax { OFF, ON };
+enum class Vax { OFF, ON };  // Enum dello stato della vaccinazione
 
-class World  // Classe che contine i dati del mondo
+// Classe che contine i dati del mondo
+class World
 {
   using Grid = std::vector<Person>;  // Alias di un vettore di persone
   int side;                          // Numero di persone per lato del mondo
   Grid grid;                         // Griglia delle persone
   double beta;
   double gamma;
-  double theta;
-  double R0;
-  Mask mask;
-  Lockdown lockdown;
-  Vax vax;
+  double theta;  // Rapporto di vaccinazione giornaliero
+  Mask mask = Simulation::Mask::OFF;
+  Lockdown lockdown = Simulation::Lockdown::OFF;
+  Vax vax = Simulation::Vax::OFF;
   static constexpr Person Outside_person = Person::E;  // Stato delle persone esterne alla griglia
   static constexpr int Outside_coord{-1};              // Coordinate delle celle esterne nel bordo superiore e di sinistra
  public:
-  static constexpr double Low_R0{1};
-  static constexpr double Medium_R0{3};
-  static constexpr double High_R0{4};
-  static constexpr int Data_min{0};                                                                                     // Valor minimo assunto dai dati
-  static constexpr int Beta_Gamma_Max{1};                                                                               // Valor massimo assunto da gamma e beta
-  World(int N, double b, double g, double t) : side{N}, grid(N * N, Person::S), beta{b}, gamma{g}, theta{t}, R0{b / g}  // Costruttore
+  // Valori limite dei paramentri
+  static constexpr int Data_min{0};        // Valor minimo assunto dai dati
+  static constexpr int Beta_Gamma_Max{1};  // Valor massimo assunto da gamma e beta
+
+  // Costruttore
+  World(int N, double b, double g, double t) : side{N}, grid(N * N, Person::S), beta{b}, gamma{g}, theta{t}
   {
     // Condizione necessaria per il senso della simulazione
     assert(beta >= Data_min);
@@ -50,7 +50,8 @@ class World  // Classe che contine i dati del mondo
     assert(gamma <= Beta_Gamma_Max);
   }
 
-  Person const& person(int r, int c) const  // Funzione menbro che consente di accedere allo stato di una determinata persona
+  // Funzione menbro che consente di accedere allo stato di una determinata persona
+  Person const& person(int r, int c) const
   {
     // Condizioni necessarie perchè si stia richidendo una persona della griglia
     assert(r <= side && c <= side);
@@ -64,7 +65,8 @@ class World  // Classe che contine i dati del mondo
     return grid[cursor];
   }
 
-  Person& person(int r, int c)  // Funzione Membro che consente di modificare lo stato di una persona
+  // Funzione Membro che consente di modificare lo stato di una persona
+  Person& person(int r, int c)
   {
     // Condizioni necessarie perchè si stia richidendo una persona della griglia
     assert(r < side && c < side);
@@ -88,10 +90,6 @@ class World  // Classe che contine i dati del mondo
   double const& get_theta() const
   {
     return theta;
-  }
-  double const& get_R0() const
-  {
-    return R0;
   }
   Mask mask_status() const
   {
@@ -126,17 +124,21 @@ class World  // Classe che contine i dati del mondo
     return std::count_if(grid.begin(), grid.end(), [](Person person) { return person == Person::V; });
   }
 
-  std::string const string_state_mask() const{
-     return (mask==Mask::ON)?"ON":"OFF";
-  }
-
-  std::string const string_state_lockdown() const{
-     return (lockdown==Lockdown::ON)?"ON":"OFF";
-  }
-
-  std::vector<int> find_E() const  // Funzione che restituisce un vettore con le coordinate delle celle vuote
+  // Funzioni che restituiscono una stringa con lo stato di Mask Lockdown e Vax
+  std::string const string_state_mask() const
   {
-    std::vector<int>  result;
+    return (mask == Mask::ON) ? "ON" : "OFF";
+  }
+
+  std::string const string_state_lockdown() const
+  {
+    return (lockdown == Lockdown::ON) ? "ON" : "OFF";
+  }
+
+  // Funzione che restituisce un vettore con le coordinate delle celle vuote
+  std::vector<int> find_E() const
+  {
+    std::vector<int> result;
     auto it{grid.begin()};
     while (it != grid.end()) {
       it = std::find(it, grid.end(), Person::E);
@@ -150,21 +152,7 @@ class World  // Classe che contine i dati del mondo
     return result;
   }
 
-  double eval_R0(World const& old_world)
-  {
-    double N{static_cast<double>(get_side() * get_side() - get_E())};
-    double new_R{static_cast<double>(get_R())};
-    double old_R{static_cast<double>(old_world.get_R())};
-    double new_S{static_cast<double>(get_S())};
-    double old_S{static_cast<double>(old_world.get_S())};
-    R0 = N * (1 - new_S / old_S) / (new_R - old_R);
-   
-   if(new_R==old_R){
-      R0=N * (1 - new_S / old_S);
-   }
-    return R0;
-  }
-
+  // Funzioni che modificano gli stati di Mask Lockdown e Vax
   void start_vax()
   {
     vax = Vax::ON;
@@ -172,30 +160,25 @@ class World  // Classe che contine i dati del mondo
 
   void change_mask()
   {
-    if(mask==Mask::ON)
-    {
-      mask=Mask::OFF;
-    }else
-    {
-      mask=Mask::ON;
+    if (mask == Mask::ON) {
+      mask = Mask::OFF;
+    } else {
+      mask = Mask::ON;
     }
   }
 
   void change_lockdown()
   {
-    if(lockdown==Lockdown::ON)
-    {
-      lockdown=Lockdown::OFF;
-    }else
-    {
-      lockdown=Lockdown::ON;
+    if (lockdown == Lockdown::ON) {
+      lockdown = Lockdown::OFF;
+    } else {
+      lockdown = Lockdown::ON;
     }
   }
-
-  
 };
 
-inline bool operator==(World const& left, World const& right)  // Operatore == per la classe World necessario per i test
+// Operatore == per la classe World necessario per i test
+inline bool operator==(World const& left, World const& right)
 {
   bool result;
   for (int i{0}; i < left.get_side(); ++i) {
@@ -209,10 +192,11 @@ inline bool operator==(World const& left, World const& right)  // Operatore == p
   return result;
 }
 
+// Operatore != per la classe World necessario per i test
 inline bool operator!=(World const& left, World const& right)
 {
   return !(left == right);
-}  // Operatore != per la classe World necessario per i test
+}
 
 // Dichiarazione delle free function di plague.cpp
 

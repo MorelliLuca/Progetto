@@ -46,11 +46,10 @@ int main()
       int day{0};                                                                               // Contatore dei giorni già simulati
       std::vector<Simulation::World> world_history;                                             // Vettore di tutti gli stati del mondo generati per poter stampare il grafico
       sf::RenderWindow graph_screen(sf::VideoMode(Window_side, Window_side), "History Graph");  // Finestra del grafico
+      sf::Event event;                                                                          // Evento utilizzato per rilevare la chiusura della finestra grafica e i click
       // Ciclco che impedisce che il programma termini automaticamente prima della chiusura della finestra
       while (grid_screen.isOpen()) {
-        sf::Event event;                          // Evento utilizzato per rilevare la chiusura della finestra grafica e i click
-        Display::set_status(grid_screen, world);  // Funzione che permette di cambiare lo stato di una persona con il mouse
-        Display::print(grid_screen, world);       // Visualizazione dello stato modificato della popolazione
+        Display::print(grid_screen, world);  // Visualizazione dello stato modificato della popolazione
         // Inizio Simulazione
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {  // Rilevazione della perssione del tasto enter per iniziare la simulazione
           // Inizio stampa della tabella
@@ -101,6 +100,7 @@ int main()
             grid_screen.close();
             graph_screen.close();
           }
+          Display::set_status(grid_screen, world, event);  // Funzione che permette di cambiare lo stato di una persona con il mouse
         }
       }
 

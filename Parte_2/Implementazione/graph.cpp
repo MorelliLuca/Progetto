@@ -1,15 +1,11 @@
 #include "graph.hpp"
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/Rect.hpp>
-#include <chrono>
-#include <iostream>
-#include <thread>
 #include "plague.hpp"
 
 namespace Display {
 constexpr int Origin{0};                    // Coordinate sia x che y dell'origine
 constexpr int Grid_line_width{1};           // Spessore della linea che separa le celle
-constexpr int Sleep_time{200};              // Tempo di attesa tra la rilevazione di un click e il seguente
 constexpr int Margin{10};                   // Margini della finetra delle opzioni
 constexpr int Font_dimension{15};           // Dimensione del font nella finestra delle opzioni
 constexpr int Box_size{35};                 // Dimensione dei box usati come pulsanti
@@ -53,29 +49,30 @@ void print(sf::RenderWindow& window, Simulation::World const& world)
   window.display();
 }
 // Funzione che consente con il mouse di cambiare lo stato di una persona
-void set_status(sf::RenderWindow& window, Simulation::World& world)
+void set_status(sf::RenderWindow& window, Simulation::World& world, sf::Event& event)
 {
-  double person_s = person_size(window, world);
-  sf::Vector2i local_position = sf::Mouse::getPosition(window);
-  // Conversione dalla poszione in pixel a quella sulla griglia
-  int r = static_cast<int>(local_position.x / person_s);
-  int c = static_cast<int>(local_position.y / person_s);
+  if (event.type == sf::Event::MouseButtonPressed) {
+    if (event.mouseButton.button == sf::Mouse::Left) {
+      double person_s = person_size(window, world);
+      sf::Vector2i local_position = sf::Mouse::getPosition(window);
+      // Conversione dalla poszione in pixel a quella sulla griglia
+      int r = static_cast<int>(local_position.x / person_s);
+      int c = static_cast<int>(local_position.y / person_s);
 
-  bool good_position = (r >= Origin && c >= Origin && r < world.get_side() && c < world.get_side());  // Controllo che il mouse si trovi dentro alla finestra
-  // Variazione da S->I, I->R e R->S
-  if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && good_position) {
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
-      world.person(r, c) = Simulation::Person::E;
-    } else if (world.person(r, c) == Simulation::Person::S) {
-      world.person(r, c) = Simulation::Person::I;
-    } else if (world.person(r, c) == Simulation::Person::I) {
-      world.person(r, c) = Simulation::Person::R;
-    } else if (world.person(r, c) == Simulation::Person::R) {
-      world.person(r, c) = Simulation::Person::E;
-    } else if (world.person(r, c) == Simulation::Person::E) {
-      world.person(r, c) = Simulation::Person::S;
+      bool good_position = (r >= Origin && c >= Origin && r < world.get_side() && c < world.get_side());  // Controllo che il mouse si trovi dentro alla finestra
+      // Variazione da S->I, I->R e R->S
+      if (good_position) {
+        if (world.person(r, c) == Simulation::Person::S) {
+          world.person(r, c) = Simulation::Person::I;
+        } else if (world.person(r, c) == Simulation::Person::I) {
+          world.person(r, c) = Simulation::Person::R;
+        } else if (world.person(r, c) == Simulation::Person::R) {
+          world.person(r, c) = Simulation::Person::E;
+        } else if (world.person(r, c) == Simulation::Person::E) {
+          world.person(r, c) = Simulation::Person::S;
+        }
+      }
     }
-    std::this_thread::sleep_for(std::chrono::milliseconds(Sleep_time));  // Sleep necessario per garantire che sia stato effettuato un click
   }
 }
 

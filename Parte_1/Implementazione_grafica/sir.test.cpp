@@ -39,7 +39,7 @@ TEST_CASE("Testing evolve function")
     CHECK(next.I() == 8095);
     CHECK(next.R() == 1080);
   }
-  SUBCASE("Beta<Gamma")
+  SUBCASE("Beta<Gamma&&Quarantine")
   {
     Simulation::Data data{7000, 8000, 1000};
     Simulation::Population population{.03, .3, data, "No", 0};
@@ -76,9 +76,11 @@ TEST_CASE("Testing evolve function")
     CHECK(next.R() == 3);
   }
 }
-TEST_CASE("Testing Simulate Function with quarantine")
+TEST_CASE("Testing Simulate Function")
 {
-  Simulation::Data data{7000, 8000, 1000};
+  SUBCASE("With quarantine")
+  {
+    Simulation::Data data{7000, 8000, 1000};
   Simulation::Population initial_population{0.1, .01, data, "No", 0};
   std::vector<Simulation::Population> simulated{Simulation::Simulate(10, initial_population, 0)};
   CHECK(simulated[0].S() == initial_population.S());
@@ -86,24 +88,23 @@ TEST_CASE("Testing Simulate Function with quarantine")
   CHECK(simulated[0].R() == initial_population.R());
   CHECK(simulated[10].Beta() == 0.05);
   CHECK(simulated[10].Quarantine() == "Yes");
-}
-
-TEST_CASE("Testing with vaccines from the start")
-{
-  Simulation::Data data{7000, 8000, 1000};
+  }
+  SUBCASE("Testing with vaccines from the start")
+  {
+    Simulation::Data data{7000, 8000, 1000};
   Simulation::Population initial_population{0.1, .01, data, "No", 2};
   std::vector<Simulation::Population> simulated{Simulation::Simulate(3, initial_population, 0)};
   CHECK(simulated[0].N_vax() == 2);
   CHECK(simulated[1].S() == 6823);
-}
-
-TEST_CASE("Testing with vaccines from day 2")
-{
-  Simulation::Data data{7000, 8000, 1000};
+  }
+  SUBCASE("Testing with vaccines from day 2")
+  {
+    Simulation::Data data{7000, 8000, 1000};
   Simulation::Population initial_population{0.1, .01, data, "No", 2};
   std::vector<Simulation::Population> simulated{Simulation::Simulate(3, initial_population, 2)};
   CHECK(simulated[0].N_vax() == 0);
   CHECK(simulated[2].N_vax() == 2);
   CHECK(simulated[1].S() == 6825);
   CHECK(simulated[2].S() == 6652);
+  }
 }

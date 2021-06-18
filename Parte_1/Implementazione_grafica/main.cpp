@@ -18,7 +18,7 @@ Simulation::Population get_parameter()
   std::string vax;
   int n_vax{0};
   std::cin >> beta >> gamma >> initial_state.S >> initial_state.I >> initial_state.R >> vax;
- if (vax=="yes")
+ if (vax=="yes") //Controllo che prende il numero di vaccini giornalieri se si vaccina
   {
     std::cout << "Insert number of vaccines per day: ";
     std::cin >> n_vax;
@@ -53,7 +53,7 @@ int main()
     try {
       Simulation::Population initial_population{get_parameter()};  // Inizializiazione della popoalzione iniziale
       int simulation_t, start_vax{0};
-      std::cout <<"Insert number of days of simulation: ";                                            // Tempo di simulazione
+      std::cout <<"Insert number of days of simulation: ";         // Tempo di simulazione
       std::cin >> simulation_t;
       // Controllo sul tempo di simulazione inserito
       if (simulation_t <= Simulation::Data::min) {
@@ -62,11 +62,12 @@ int main()
       if (std::cin.fail()) {
         throw std::invalid_argument{"These parameters have to be numbers"};
       }
-      if (initial_population.N_vax()!=0)
+      if (initial_population.N_vax()!=0) //Se si vaccina chiede da che giorno iniziare
       {
         std::cout << "Insert from what day they start vaccinating: ";
         std::cin >> start_vax;
-        if (simulation_t <= start_vax) {
+        //Controlli sulla data di inizio vaccinazioni
+        if (simulation_t <= start_vax) { 
         throw std::invalid_argument{"You can't start vaccinating after the end of the simulation"};
       }
       if (start_vax < Simulation::Data::min) {

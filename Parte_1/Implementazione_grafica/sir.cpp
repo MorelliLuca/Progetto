@@ -43,10 +43,9 @@ Population const Evolve(Population const& initial_population)  // Funzione che d
    // Calcolo dei valori successivi di S,I e R
    next.S() = static_cast<int>(initial_population.S() - beta * (initial_population.S() / N) * initial_population.I() + Approx_term);
    next.I() = static_cast<int>(initial_population.I() + beta * (initial_population.S() / N) * initial_population.I() - gamma * initial_population.I() + Approx_term);
-   assert(next.I() >= Data::min);
+  
    next.R() = static_cast<int>(initial_population.R() + gamma * initial_population.I() + Approx_term);
-   assert(next.S() >= Data::min);
-   assert(next.R() >= Data::min);
+   
 next.N_vax()=n_vax;
 if (next.S()>=n_vax) //Modifiche a S e R se vi sono i vaccini e S è maggiore del numero di vaccini giornalieri
    {
@@ -78,7 +77,9 @@ if (next.S()>=n_vax) //Modifiche a S e R se vi sono i vaccini e S è maggiore de
     next.R() += -next.I();
     next.I() = Data::min;
   }
-  
+  assert(next.S() >= Data::min);
+   assert(next.R() >= Data::min); 
+   assert(next.I() >= Data::min);
   assert(next.Total() == initial_population.Total());
   return next;
 

@@ -9,8 +9,8 @@
 #include "plague.hpp"
 
 constexpr int sleep_time{750};       // Tempo trascorso tra la simulazione di un giorno e l'altro
-constexpr int Window_side{400};      // Dimensione finstra grafica
-constexpr int Window_opt_side{200};  // Dimensione finstra grafica
+constexpr int Window_side{400};      // Dimensione finestra grafica
+constexpr int Window_opt_side{200};  // Dimensione finestra grafica
 
 // Funzione che prende in input i parametri iniziali della simulazione
 Simulation::World get_parameter()
@@ -47,7 +47,7 @@ int main()
       std::vector<Simulation::World> world_history;                                             // Vettore di tutti gli stati del mondo generati per poter stampare il grafico
       sf::RenderWindow graph_screen(sf::VideoMode(Window_side, Window_side), "History Graph");  // Finestra del grafico
       sf::Event event;                                                                          // Evento utilizzato per rilevare la chiusura della finestra grafica e i click
-      // Ciclco che impedisce che il programma termini automaticamente prima della chiusura della finestra
+      // Ciclo che impedisce che il programma termini automaticamente prima della chiusura della finestra
       while (grid_screen.isOpen()) {
         Display::print(grid_screen, world);  // Visualizazione dello stato modificato della popolazione
         // Inizio Simulazione

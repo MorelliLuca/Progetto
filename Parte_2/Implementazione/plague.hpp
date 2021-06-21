@@ -10,8 +10,6 @@
 
 namespace Simulation {
 
-constexpr int Mask_factor{2};
-
 enum class Person { E, S, I, R, V };  // Enum class degli stati della salute di una persona
 
 enum class Mask { OFF, ON };  // Enum dello stato di uso delle mascherine
@@ -50,13 +48,13 @@ class World
     assert(gamma <= Beta_Gamma_Max);
   }
 
-  // Funzione menbro che consente di accedere allo stato di una determinata persona
+  // Funzione membro che consente di accedere allo stato di una determinata persona
   Person const& person(int r, int c) const
   {
     // Condizioni necessarie perchè si stia richidendo una persona della griglia
     assert(r <= side && c <= side);
     assert(r >= Outside_coord && c >= Outside_coord);
-    // Caso in cui si richieda lo stato di una persona appena esterna alla griglia di default R (rimossa)
+    // Caso in cui si richieda lo stato di una persona appena esterna alla griglia di default E (empty)
     // necessario per poter controllare le persone adiacenti ad una persona sul bordo della griglia
     if (r == Outside_coord || c == Outside_coord || r == side || c == side) {
       return Outside_person;

@@ -17,7 +17,7 @@ constexpr int Rot_angle{90};                // Angolo utilizzato per le rotazion
 constexpr int Initial_size{7};              // Altezza prima colonna
 constexpr int Correction_size{3};           // Fattore correttivo delle colonne sucessive alla prima
 
-// Funzione che calcola la dimesione di una cella
+// Funzione che calcola la dimensione di una cella
 double person_size(sf::RenderWindow const& window, Simulation::World const& world)
 {
   return window.getSize().x / world.get_side();
@@ -55,12 +55,12 @@ void set_status(sf::RenderWindow& window, Simulation::World& world, sf::Event& e
     if (event.mouseButton.button == sf::Mouse::Left) {
       double person_s = person_size(window, world);
       sf::Vector2i local_position = sf::Mouse::getPosition(window);
-      // Conversione dalla poszione in pixel a quella sulla griglia
+      // Conversione dalla posizione in pixel a quella sulla griglia
       int r = static_cast<int>(local_position.x / person_s);
       int c = static_cast<int>(local_position.y / person_s);
 
       bool good_position = (r >= Origin && c >= Origin && r < world.get_side() && c < world.get_side());  // Controllo che il mouse si trovi dentro alla finestra
-      // Variazione da S->I, I->R e R->S
+      // Variazione da S->I, I->R, R->E e E->S
       if (good_position) {
         if (world.person(r, c) == Simulation::Person::S) {
           world.person(r, c) = Simulation::Person::I;

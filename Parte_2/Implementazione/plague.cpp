@@ -47,7 +47,7 @@ Person person_next_status(World const& world, int r, int c)
     case Person::S:                                                                         // Caso persona sana
       if (near_I != 0 && dis_virus(gen) <= (beta + (beta / Total_near_person) * near_I)) {  // Infezione
         return Person::I;
-      } else if (world.vax_status() == Vax::ON && dis_virus(gen) <= world.get_theta()) {  // Vacconazione
+      } else if (world.vax_status() == Vax::ON && dis_virus(gen) <= world.get_theta()) {  // Vaccinazione
         return Person::V;
       }
       break;

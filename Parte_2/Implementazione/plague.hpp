@@ -43,9 +43,11 @@ class World
     // Condizione necessaria per il senso della simulazione
     assert(beta >= Data_min);
     assert(gamma >= Data_min);
+    assert(theta >= Data_min);
     assert(N > Data_min);
     assert(beta <= Beta_Gamma_Max);
     assert(gamma <= Beta_Gamma_Max);
+    assert(theta <= Beta_Gamma_Max);
   }
 
   // Funzione membro che consente di accedere allo stato di una determinata persona

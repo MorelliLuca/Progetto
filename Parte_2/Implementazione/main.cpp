@@ -19,6 +19,9 @@ Simulation::World get_parameter()
   double beta, gamma, theta;
   std::cin >> side >> beta >> gamma >> theta;
   // Controlli della coerenza dei dati inseriti con il modello
+  if (std::cin.fail()) {
+    throw std::invalid_argument{"These parameters have to be numbers"};
+  }
   if (beta < Simulation::World::Data_min || gamma < Simulation::World::Data_min || theta < Simulation::World::Data_min) {
     throw std::invalid_argument{"Beta gamma, and theta can't be less than 0"};
   }
@@ -26,10 +29,7 @@ Simulation::World get_parameter()
     throw std::invalid_argument{"Dimension of the world has to be more than 0"};
   }
   if (beta > Simulation::World::Beta_Gamma_Max || gamma > Simulation::World::Beta_Gamma_Max || theta > Simulation::World::Beta_Gamma_Max) {
-    throw std::invalid_argument{"Beta and gamma can't be more than 1"};
-  }
-  if (std::cin.fail()) {
-    throw std::invalid_argument{"These parameters have to be numbers"};
+    throw std::invalid_argument{"Beta, gamma and theta can't be more than 1"};
   }
   Simulation::World parameters{side, beta, gamma, theta};
   return parameters;
@@ -37,9 +37,10 @@ Simulation::World get_parameter()
 
 int main()
 {
-  std::cout << "Insert the side of the world, beta, gamma and theta: ";
+  
   while (1) {
     try {
+      std::cout << "Insert the side of the world, beta, gamma and theta: ";
       Simulation::World world{get_parameter()};                                                 // Inizializazione del mondo nella sua configurazione iniziale
       sf::RenderWindow grid_screen(sf::VideoMode(Window_side, Window_side), "SIR Simulation");  // Finstra in cui è rappresentata la griglia
       Display::print(grid_screen, world);                                                       // Visualizazione a finestra della configurazione iniziale
@@ -68,20 +69,16 @@ int main()
             ++day;  // Variazione del giorno
             Simulation::World next = Simulation::evolve(world);
             Display::print(grid_screen, next);  // Visualizazione delle variazioni graficamente
-
             Simulation::print_terminal(next, day);              // Stampa a terminale
             world_history.push_back(next);                      // Aggiunta al vettore del nuovo stato
             Display::print_graph(graph_screen, world_history);  // Stampa del grafico
-
             world = next;
-
             std::this_thread::sleep_for(std::chrono::milliseconds(sleep_time));
             // Ciclo degli eventi della finestra delle opzioni
             while (opt_screen.pollEvent(event)) {
               if (event.type == sf::Event::Closed) {  // Chiususra della finesta delle opzioni
                 opt_screen.close();
               }
-
               Display::option(world, event, opt_screen);  // Controllo sulla variazione delle opzioni
             }
             // Ciclo di controllo degli eventi della finestra con la griglia
@@ -103,7 +100,6 @@ int main()
           Display::set_status(grid_screen, world, event);  // Funzione che permette di cambiare lo stato di una persona con il mouse
         }
       }
-
       break;
     } catch (std::invalid_argument const& e) {  // Errore dovuto ad un input errato
       std::cerr << "\033[31mInavalid input:\033[0m " << e.what() << '\n';
@@ -118,6 +114,5 @@ int main()
       return EXIT_FAILURE;
     }
   }
-
   return 0;
 }

@@ -84,7 +84,7 @@ int main()
 
               Display::option(world, event, opt_screen);  // Controllo sulla variazione delle opzioni
             }
-            // Ciclo di controllo degli eventi della finstra con la griglia
+            // Ciclo di controllo degli eventi della finestra con la griglia
             while (grid_screen.pollEvent(event)) {
               if (event.type == sf::Event::Closed) {  // Chiusura del programma
                 opt_screen.close();
@@ -94,7 +94,7 @@ int main()
             }
           }
         }
-        // Ciclo di controllo degli eventi della finstra con la griglia
+        // Ciclo di controllo degli eventi della finestra con la griglia
         while (grid_screen.pollEvent(event)) {
           if (event.type == sf::Event::Closed) {  // Chiusura del programma
             grid_screen.close();

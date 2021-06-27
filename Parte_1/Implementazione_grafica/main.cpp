@@ -26,7 +26,10 @@ Simulation::Population get_parameter()
     {
       throw std::invalid_argument{"The number of vaccines has to be more than 0"};
     }
-  } 
+  }else if(vax!="no")
+ {
+   throw std::invalid_argument{"Please use yes or no"};
+ }
   // Controlli sui dati inseriti
   if (initial_state.S < Simulation::Data::min || initial_state.I < Simulation::Data::min || initial_state.R < Simulation::Data::min || beta < Simulation::Data::min ||
       gamma < Simulation::Data::min) {

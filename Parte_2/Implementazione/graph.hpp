@@ -4,7 +4,7 @@
 #include "plague.hpp"
 
 namespace Display {
-// Dichiarazione delle free function di graph.cpp
+// Dichiarazione delle free functions di graph.cpp
 double person_size(sf::RenderWindow const& window, Simulation::World const& world);
 
 void print(sf::RenderWindow& window, Simulation::World const& world);

@@ -7,7 +7,7 @@
 
 namespace Simulation {
 
-struct Data  // Struct contenente i valori S, I e R
+struct Data  // Struct contenente i valori S, I e R e costanti
 {
   int S{0};
   int I{0};

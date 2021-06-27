@@ -22,11 +22,11 @@ Simulation::Population get_parameter()
   {
     std::cout << "Insert number of vaccines per day: ";
     std::cin >> n_vax;
-    if (n_vax<=Simulation::Data::min)
+    if (n_vax<=Simulation::Data::min) //Controllo che i vaccini giornalieri siano più di 0
     {
       throw std::invalid_argument{"The number of vaccines has to be more than 0"};
     }
-  }else if(vax!="no")
+  }else if(vax!="no") //Controllo sul contenuto della stringa
  {
    throw std::invalid_argument{"Please use yes or no"};
  }
@@ -54,7 +54,7 @@ int main()
   while (1) {
     try {
       std::cout << "Insert Beta, Gamma, S, I, R, and if people can get vaccinated (yes/no): ";
-      Simulation::Population initial_population{get_parameter()};  // Inizializiazione della popoalzione iniziale
+      Simulation::Population initial_population{get_parameter()};  // Inizializzazione della popolazione iniziale
       int simulation_t, start_vax{0};
       std::cout <<"Insert number of days of simulation: ";         // Tempo di simulazione
       std::cin >> simulation_t;
@@ -82,19 +82,19 @@ int main()
       }
       // Simulazione
       std::vector<Simulation::Population> population{Simulation::Simulate(simulation_t, initial_population, start_vax)};
-      // Stampa a terminale dei risulati della simulazione
+      // Stampa a terminale dei risultati della simulazione
       Simulation::Print(population);
       sf::RenderWindow w_graph(sf::VideoMode(Graphic_window_side+Space_caption+5, Graphic_window_side), "SIR Graph");  // Finestra grafica
       w_graph.clear(sf::Color::White);                                                               // Impostazione dello sfondo
       Display::print_R(w_graph, population);                                                         // Stampa grafica del grafico di R
       Display::print_S(w_graph, population);                                                         // Stampa grafica del grafico di S
-      Display::print_I(w_graph, population);                                                         // Stampa grafica del grafico di R
+      Display::print_I(w_graph, population);                                                         // Stampa grafica del grafico di I
       Display::print_axis(w_graph, population);                                                      // Stampa degli assi
       Display::print_caption(w_graph, population);                                                    //Stampa legenda
       while (w_graph.isOpen()) {                                                                     // Ciclo che evita la terminazione automatica del programma a finestra aperta
         sf::Event event;                                                                             // Evento usato per rilevare la chiusura della finestra grafica
         while (w_graph.waitEvent(event)) { 
-                                                         // Ciclo utilizzato per chiudere il programma quando viene chiusa la finestra
+          // Ciclo utilizzato per chiudere il programma quando viene chiusa la finestra
           if (event.type == sf::Event::Closed) {
             w_graph.close();
           }

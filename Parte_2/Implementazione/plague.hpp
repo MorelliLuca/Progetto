@@ -3,8 +3,6 @@
 
 #include <algorithm>
 #include <cassert>
-#include <iomanip>
-#include <iostream>
 #include <string>
 #include <vector>
 
@@ -18,7 +16,7 @@ enum class Lockdown { OFF, ON };  // Enum dello stato del lockdown
 
 enum class Vax { OFF, ON };  // Enum dello stato della vaccinazione
 
-// Classe che contine i dati del mondo
+// Classe che contiene i dati del mondo
 class World
 {
   using Grid = std::vector<Person>;  // Alias di un vettore di persone
@@ -33,30 +31,30 @@ class World
   static constexpr Person Outside_person = Person::E;  // Stato delle persone esterne alla griglia
   static constexpr int Outside_coord{-1};              // Coordinate delle celle esterne nel bordo superiore e di sinistra
  public:
-  // Valori limite dei paramentri
-  static constexpr int Data_min{0};        // Valor minimo assunto dai dati
-  static constexpr int Beta_Gamma_Max{1};  // Valor massimo assunto da gamma e beta
+  // Valori limite dei parametri
+  static constexpr int Data_min{0};        // Valore minimo assunto dai dati
+  static constexpr int Beta_Gamma_Theta_Max{1};  // Valore massimo assunto da gamma, beta e theta
 
   // Costruttore
   World(int N, double b, double g, double t) : side{N}, grid(N * N, Person::S), beta{b}, gamma{g}, theta{t}
   {
-    // Condizione necessaria per il senso della simulazione
+    // Condizioni necessarie per il senso della simulazione
     assert(beta >= Data_min);
     assert(gamma >= Data_min);
     assert(theta >= Data_min);
     assert(N > Data_min);
-    assert(beta <= Beta_Gamma_Max);
-    assert(gamma <= Beta_Gamma_Max);
-    assert(theta <= Beta_Gamma_Max);
+    assert(beta <= Beta_Gamma_Theta_Max);
+    assert(gamma <= Beta_Gamma_Theta_Max);
+    assert(theta <= Beta_Gamma_Theta_Max);
   }
 
   // Funzione membro che consente di accedere allo stato di una determinata persona
   Person const& person(int r, int c) const
   {
-    // Condizioni necessarie perchè si stia richidendo una persona della griglia
+    // Condizioni necessarie perchè si stia richiedendo una persona della griglia
     assert(r <= side && c <= side);
     assert(r >= Outside_coord && c >= Outside_coord);
-    // Caso in cui si richieda lo stato di una persona appena esterna alla griglia di default E (empty)
+    // Caso in cui si richieda lo stato di una persona appena esterna alla griglia (di default E (empty))
     // necessario per poter controllare le persone adiacenti ad una persona sul bordo della griglia
     if (r == Outside_coord || c == Outside_coord || r == side || c == side) {
       return Outside_person;
@@ -68,7 +66,7 @@ class World
   // Funzione Membro che consente di modificare lo stato di una persona
   Person& person(int r, int c)
   {
-    // Condizioni necessarie perchè si stia richidendo una persona della griglia
+    // Condizioni necessarie perchè si stia richiedendo una persona della griglia
     assert(r < side && c < side);
     assert(r >= Data_min && c >= Data_min);
     int cursor = r * side + c;  // Conversione delle coordinate bidimensionali alla posizione nel vettore grid
@@ -124,7 +122,7 @@ class World
     return std::count_if(grid.begin(), grid.end(), [](Person person) { return person == Person::V; });
   }
 
-  // Funzioni che restituiscono una stringa con lo stato di Mask Lockdown e Vax
+  // Funzioni che restituiscono una stringa con lo stato di Mask, Lockdown e Vax
   std::string const string_state_mask() const
   {
     return (mask == Mask::ON) ? "ON" : "OFF";
@@ -152,7 +150,7 @@ class World
     return result;
   }
 
-  // Funzioni che modificano gli stati di Mask Lockdown e Vax
+  // Funzioni che modificano gli stati di Mask, Lockdown e Vax
   void start_vax()
   {
     vax = Vax::ON;
@@ -198,7 +196,7 @@ inline bool operator!=(World const& left, World const& right)
   return !(left == right);
 }
 
-// Dichiarazione delle free function di plague.cpp
+// Dichiarazione delle free functions di plague.cpp
 
 int I_near(World const& world, int r, int c);
 

@@ -28,7 +28,7 @@ Simulation::World get_parameter()
   if (side <= Simulation::World::Data_min) {
     throw std::invalid_argument{"Dimension of the world has to be more than 0"};
   }
-  if (beta > Simulation::World::Beta_Gamma_Max || gamma > Simulation::World::Beta_Gamma_Max || theta > Simulation::World::Beta_Gamma_Max) {
+  if (beta > Simulation::World::Beta_Gamma_Theta_Max || gamma > Simulation::World::Beta_Gamma_Theta_Max || theta > Simulation::World::Beta_Gamma_Theta_Max) {
     throw std::invalid_argument{"Beta, gamma and theta can't be more than 1"};
   }
   Simulation::World parameters{side, beta, gamma, theta};
@@ -41,25 +41,25 @@ int main()
   while (1) {
     try {
       std::cout << "Insert the side of the world, beta, gamma and theta: ";
-      Simulation::World world{get_parameter()};                                                 // Inizializazione del mondo nella sua configurazione iniziale
-      sf::RenderWindow grid_screen(sf::VideoMode(Window_side, Window_side), "SIR Simulation");  // Finstra in cui è rappresentata la griglia
-      Display::print(grid_screen, world);                                                       // Visualizazione a finestra della configurazione iniziale
+      Simulation::World world{get_parameter()};                                                 // Inizializzazione del mondo nella sua configurazione iniziale
+      sf::RenderWindow grid_screen(sf::VideoMode(Window_side, Window_side), "SIR Simulation");  // Finestra in cui è rappresentata la griglia
+      Display::print(grid_screen, world);                                                       // Visualizzazione a finestra della configurazione iniziale
       int day{0};                                                                               // Contatore dei giorni già simulati
       std::vector<Simulation::World> world_history;                                             // Vettore di tutti gli stati del mondo generati per poter stampare il grafico
       sf::RenderWindow graph_screen(sf::VideoMode(Window_side, Window_side), "History Graph");  // Finestra del grafico
       sf::Event event;                                                                          // Evento utilizzato per rilevare la chiusura della finestra grafica e i click
       // Ciclo che impedisce che il programma termini automaticamente prima della chiusura della finestra
       while (grid_screen.isOpen()) {
-        Display::print(grid_screen, world);  // Visualizazione dello stato modificato della popolazione
+        Display::print(grid_screen, world);  // Visualizzazione dello stato modificato della popolazione
         // Inizio Simulazione
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {  // Rilevazione della perssione del tasto enter per iniziare la simulazione
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {  // Rilevazione della pressione del tasto enter per iniziare la simulazione
           // Inizio stampa della tabella
           Simulation::print_intestation(world);                                                                  // Stampa intestazione
           Simulation::print_terminal(world, day);                                                                // Stampa dati iniziali
-          world_history.push_back(world);                                                                        // Aggiunta al vettore lo stato iniziale
+          world_history.push_back(world);                                                                        // Aggiunta al vettore dello stato iniziale
           sf::RenderWindow opt_screen(sf::VideoMode(Window_opt_side, Window_opt_side), "Option control panel");  // Finestra delle opzioni
           Display::opt_screen_print(opt_screen, world);
-          // Ciclo che continua la simulazione fino alla pressione di esc o alla chisura della finestra
+          // Ciclo che continua la simulazione fino alla pressione di esc o alla chiusura della finestra
           while (opt_screen.isOpen() && grid_screen.isOpen()) {
             // Funzione che gestisce il random walk se non c'è il lockdown
             if (world.lockdown_status() == Simulation::Lockdown::OFF) {
@@ -68,7 +68,7 @@ int main()
             // Evoluzione della simulazione di un giorno
             ++day;  // Variazione del giorno
             Simulation::World next = Simulation::evolve(world);
-            Display::print(grid_screen, next);  // Visualizazione delle variazioni graficamente
+            Display::print(grid_screen, next);  // Visualizzazione delle variazioni graficamente
             Simulation::print_terminal(next, day);              // Stampa a terminale
             world_history.push_back(next);                      // Aggiunta al vettore del nuovo stato
             Display::print_graph(graph_screen, world_history);  // Stampa del grafico
@@ -76,7 +76,7 @@ int main()
             std::this_thread::sleep_for(std::chrono::milliseconds(sleep_time));
             // Ciclo degli eventi della finestra delle opzioni
             while (opt_screen.pollEvent(event)) {
-              if (event.type == sf::Event::Closed) {  // Chiususra della finesta delle opzioni
+              if (event.type == sf::Event::Closed) {  // Chiusura della finestra delle opzioni
                 opt_screen.close();
               }
               Display::option(world, event, opt_screen);  // Controllo sulla variazione delle opzioni

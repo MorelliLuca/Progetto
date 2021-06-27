@@ -6,7 +6,7 @@
 namespace Display {
 constexpr int Origin{0};                    // Coordinate sia x che y dell'origine
 constexpr int Grid_line_width{1};           // Spessore della linea che separa le celle
-constexpr int Margin{10};                   // Margini della finetra delle opzioni
+constexpr int Margin{10};                   // Margini della finestra delle opzioni
 constexpr int Font_dimension{15};           // Dimensione del font nella finestra delle opzioni
 constexpr int Box_size{35};                 // Dimensione dei box usati come pulsanti
 constexpr double Graph_line_width{1};       // Spessore della linea utilizzata per gli assi
@@ -26,7 +26,7 @@ double person_size(sf::RenderWindow const& window, Simulation::World const& worl
 void print(sf::RenderWindow& window, Simulation::World const& world)
 {
   double person_s = person_size(window, world);
-  window.clear(sf::Color::White);                                                                   // Pulizia della finstra grafica
+  window.clear(sf::Color::White);                                                                   // Pulizia della finestra grafica
   sf::RectangleShape square(sf::Vector2f(person_s - Grid_line_width, person_s - Grid_line_width));  // Creazione della forma di una cella
   for (int r{Origin}; r < world.get_side(); ++r) {
     for (int c{Origin}; c < world.get_side(); ++c) {
@@ -157,7 +157,7 @@ void option(Simulation::World& world, sf::Event& event, sf::RenderWindow& window
   if (event.type == sf::Event::MouseButtonPressed) {
     if (event.mouseButton.button == sf::Mouse::Left) {
       double spacing{static_cast<double>(window.getSize().y) / 4};
-      // Oggetti che consentono di calcolare con una funzione di sfml se la posizione del mouse
+      // Oggetti che consentono di calcolare con una funzione di SFML se la posizione del mouse
       // si trova nell'area dei pulsanti
       sf::Rect<float> mask_box(window.getSize().x - Box_size - Margin, Margin, Box_size, Box_size);
       sf::Rect<float> lockdown_box(window.getSize().x - Box_size - Margin, Margin + spacing, Box_size, Box_size);
@@ -201,13 +201,13 @@ void print_I(sf::RenderWindow& window, std::vector<Simulation::World> const& dat
 
     line.move(sf::Vector2f(Origin, -it->get_I() * epsilon_y - line.getSize().y));
     window.draw(line);
-    // Correzione dovuta al fatto che l'origine del piano per sfml è in alto a sinistra e non in basso a sinistra
-    // Così facendo resetto la posizione sull'asse dell y della colonna per agevolare il movimento verso il giorno successivo
+    // Correzione dovuta al fatto che l'origine del piano per SFML è in alto a sinistra e non in basso a sinistra
+    // Così facendo si resetta la posizione sull'asse dell y della colonna per agevolare il movimento verso il giorno successivo
     line.move(sf::Vector2f(epsilon_x, it->get_I() * epsilon_y + line.getSize().y));
   }
   window.display();
 }
-// Le due funzioni a seguire stampano il grafico di S e R e funzionano in maniera del tutto analoga a quella precedente
+// Le tre funzioni a seguire stampano il grafico di S, R e V e funzionano in maniera del tutto analoga a quella precedente
 void print_S(sf::RenderWindow& window, std::vector<Simulation::World> const& data_vector)
 {
   double epsilon_x{(window.getSize().x) / static_cast<double>(data_vector.size())};
@@ -300,8 +300,8 @@ void print_axis(sf::RenderWindow& window, std::vector<Simulation::World> const& 
   label.setString("0");  // Etichetta origine
   label.setPosition(sf::Vector2f(Origin, window.getSize().y - Graph_font_dimension));
   window.draw(label);
-  line.rotate(Rot_angle);  // Rotazione di 90° necessaria per stmpare la scala sull'asse x
-  // Stampa della scalla asse x
+  line.rotate(Rot_angle);  // Rotazione di 90° necessaria per stampare la scala sull'asse x
+  // Stampa della scala asse x
   for (int i{1}; i < Axis_division; ++i) {
     line.setPosition(sf::Vector2f((i * (window.getSize().x) / Axis_division), window.getSize().y - Graph_line_length));
     window.draw(line);

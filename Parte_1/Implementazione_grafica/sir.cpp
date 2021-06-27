@@ -9,7 +9,7 @@ namespace Simulation {
 
 constexpr int Term_width_q{6};            //Dimensione colonna quarantena
 constexpr int Term_width_day{5};          // Dimensione colonna day
-constexpr int Term_width_SIR{7};           // Dimensione  colonna S, I e R
+constexpr int Term_width_SIR{7};           // Dimensione colonna S, I e R
 constexpr int Term_width_beta{6};          // Dimensione colonna beta
 constexpr int Term_width_gamma{7};         // Dimensione colonna gamma
 constexpr int Term_width_n_vax{7};        //Dimensione colonna numero vaccini
@@ -83,7 +83,7 @@ if (next.S()>=n_vax) //Modifiche a S e R se vi sono i vaccini e S è maggiore de
   assert(next.Total() == initial_population.Total());
   return next;
 
-  // Funzione simulate-Restituisce un vettore Population con gli stati giorno
+  // Funzione Simulate: restituisce un vettore Population con gli stati giorno
   // per giorno
 }
 std::vector<Population> Simulate(int T_duration, Population const& initial_population, int Start_vax)
@@ -99,7 +99,7 @@ std::vector<Population> Simulate(int T_duration, Population const& initial_popul
       std::cerr << "Simulation terminated for statistical limit\nEpidemy can be considered ended at day " << i << "\n";
       break;
     }
-    // Terminazione della simulazione se il numero di I=0
+    // Terminazione della simulazione se I=0
     if (result[i].I() == Data::min) {
       std::cerr << "Simulation terminated at day " << i << " because there are 0 infected\n";
       break;

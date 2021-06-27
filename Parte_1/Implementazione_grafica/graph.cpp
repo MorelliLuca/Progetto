@@ -42,8 +42,8 @@ void print_I(sf::RenderWindow& window, std::vector<Simulation::Population> const
     }
       line.move(sf::Vector2f(Origin, -it->I() * epsilon_y-line.getSize().y));
     window.draw(line);
-    // Correzione dovuta al fatto che l'origine del piano per sfml è in alto a sinistra e non in basso a sinistra
-    // Così facendo resetto la posizione sull'asse dell y della colonna per agevolare il movimento verso il giorno successivo
+    // Correzione dovuta al fatto che l'origine del piano per SFML è in alto a sinistra e non in basso a sinistra
+    // Così facendo si resetta la posizione sull'asse dell y della colonna per agevolare il movimento verso il giorno successivo
      line.move(sf::Vector2f(epsilon_x, it->I()*epsilon_y+line.getSize().y));
   }
   window.display();
@@ -131,8 +131,8 @@ void print_axis(sf::RenderWindow& window, std::vector<Simulation::Population> co
   label.setString("0");  // Etichetta origine
   label.setPosition(sf::Vector2f(Origin+Space_caption, window.getSize().y - Font_dimension));
   window.draw(label);
-  line.rotate(Rot_angle);  // Rotazione di 90° necessaria per stmpare la scala sull'asse x
-                           // Stampa della scalla asse x
+  line.rotate(Rot_angle);  // Rotazione di 90° necessaria per stampare la scala sull'asse x
+                           // Stampa della scala asse x
   for (int i{1}; i < Axis_division; ++i) {
     line.setPosition(sf::Vector2f(Space_caption+(i * (window.getSize().x-Space_caption) / Axis_division), window.getSize().y - Line_length));
     window.draw(line);
@@ -179,7 +179,7 @@ I_box.setOutlineColor(sf::Color::Black);
   float label_I_width = label_I.getLocalBounds().width;
   label_I.setPosition(sf::Vector2f(X_box+(Width_box-label_I_width)/2, 103));
   window.draw(label_I);
-  sf::RectangleShape R_box(sf::Vector2f(Width_box, Height_box)); //box ciano con outline nero per i rimossi
+  sf::RectangleShape R_box(sf::Vector2f(Width_box, Height_box)); //box color ciano con outline nero per i rimossi
   R_box.setPosition(sf::Vector2f(X_box, 200));
   R_box.setFillColor(sf::Color::Cyan);
   R_box.setOutlineThickness(1);

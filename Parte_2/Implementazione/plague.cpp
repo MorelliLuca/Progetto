@@ -6,13 +6,13 @@
 
 namespace Simulation {
 
-constexpr int Min_virus_distribution{0};  // Valore minimo generato randomicamente per determinare infezione e guarigioni
-constexpr int Max_virus_distribution{1};  // Valore massimo generato randomicamente per determinare infezione e guarigioni
+constexpr int Min_virus_distribution{0};  // Valore minimo generato randomicamente per determinare infezione e guarigione
+constexpr int Max_virus_distribution{1};  // Valore massimo generato randomicamente per determinare infezione e guarigione
 constexpr int Min_walk_distribution{-1};  // Valore minimo generato randomicamente per consentire alle celle di muoversi
 constexpr int Max_walk_distribution{1};   // Valore massimo generato randomicamente per consentire alle celle di muoversi
 constexpr double Total_near_person{8};    // Persone limitrofe totali
 constexpr int Term_width_day{5};          // Dimensione colonna day
-constexpr int Term_width_SIR{7};          // Dimensione  colonna S, I e R
+constexpr int Term_width_SIR{7};          // Dimensione colonna S, I e R
 constexpr int Term_width_opt{6};          // Dimensione colonna delle opzioni
 
 // Oggetti necessari per la generazione di numeri casuali
@@ -20,7 +20,7 @@ std::default_random_engine gen{std::random_device{}()};
 std::uniform_real_distribution<double> dis_virus(Min_virus_distribution, Max_virus_distribution);
 std::uniform_int_distribution<int> dis_walk(Min_walk_distribution, Max_walk_distribution);
 
-// Funzione che controlla quante persone sono infette delle 8 adiacenti ad una data
+// Funzione che controlla quante persone sono infette tra le 8 adiacenti ad una data
 int I_near(World const& world, int r, int c)
 {
   int result = 0;
@@ -37,9 +37,9 @@ int I_near(World const& world, int r, int c)
 // Funzione che determina quale sarà il prossimo stato di una persona
 Person person_next_status(World const& world, int r, int c)
 {
-  int const near_I{I_near(world, r, c)};  // Numero di infetti vicino alla persona in poszione (r,c)
+  int const near_I{I_near(world, r, c)};  // Numero di infetti vicino alla persona in posizione (r,c)
   double beta{world.get_beta()};
-  if (world.mask_status() == Simulation::Mask::ON)  // Controllo sulla presenza delle mascherine con annessa diminuzione di beta
+  if (world.mask_status() == Simulation::Mask::ON)  // Controllo sulla presenza delle mascherine con annessa diminuizione di beta
   {
     beta = beta / 2;
   }
@@ -108,7 +108,7 @@ void walk(World& world)
     int r1{*it};
     ++it;
     int c1{*it};
-    // Spostamento di una cella randomica di quelle adicenti
+    // Spostamento nella cella vuota di una cella randomica tra quelle adiacenti 
     int r2 = r1 + dis_walk(gen);
     int c2 = c1 + dis_walk(gen);
 

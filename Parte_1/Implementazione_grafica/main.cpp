@@ -51,9 +51,9 @@ Simulation::Population get_parameter()
 
 int main()
 {
-  std::cout << "Insert Beta, Gamma, S, I, R, and if people can get vaccinated (yes/no): ";
   while (1) {
     try {
+      std::cout << "Insert Beta, Gamma, S, I, R, and if people can get vaccinated (yes/no): ";
       Simulation::Population initial_population{get_parameter()};  // Inizializiazione della popoalzione iniziale
       int simulation_t, start_vax{0};
       std::cout <<"Insert number of days of simulation: ";         // Tempo di simulazione

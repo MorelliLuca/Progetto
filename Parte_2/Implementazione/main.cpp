@@ -19,6 +19,9 @@ Simulation::World get_parameter()
   double beta, gamma, theta;
   std::cin >> side >> beta >> gamma >> theta;
   // Controlli della coerenza dei dati inseriti con il modello
+  if (std::cin.fail()) {
+    throw std::invalid_argument{"These parameters have to be numbers"};
+  }
   if (beta < Simulation::World::Data_min || gamma < Simulation::World::Data_min || theta < Simulation::World::Data_min) {
     throw std::invalid_argument{"Beta gamma, and theta can't be less than 0"};
   }
@@ -26,20 +29,19 @@ Simulation::World get_parameter()
     throw std::invalid_argument{"Dimension of the world has to be more than 0"};
   }
   if (beta > Simulation::World::Beta_Gamma_Max || gamma > Simulation::World::Beta_Gamma_Max || theta > Simulation::World::Beta_Gamma_Max) {
-    throw std::invalid_argument{"Beta and gamma can't be more than 1"};
+    throw std::invalid_argument{"Beta, gamma and theta can't be more than 1"};
   }
-  if (std::cin.fail()) {
-    throw std::invalid_argument{"These parameters have to be numbers"};
-  }
+  
   Simulation::World parameters{side, beta, gamma, theta};
   return parameters;
 }
 
 int main()
 {
-  std::cout << "Insert the side of the world, beta, gamma and theta: ";
+  
   while (1) {
     try {
+      std::cout << "Insert the side of the world, beta, gamma and theta: ";
       Simulation::World world{get_parameter()};                                                 // Inizializazione del mondo nella sua configurazione iniziale
       sf::RenderWindow grid_screen(sf::VideoMode(Window_side, Window_side), "SIR Simulation");  // Finstra in cui è rappresentata la griglia
       Display::print(grid_screen, world);                                                       // Visualizazione a finestra della configurazione iniziale

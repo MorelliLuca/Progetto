@@ -31,7 +31,6 @@ Simulation::World get_parameter()
   if (beta > Simulation::World::Beta_Gamma_Max || gamma > Simulation::World::Beta_Gamma_Max || theta > Simulation::World::Beta_Gamma_Max) {
     throw std::invalid_argument{"Beta, gamma and theta can't be more than 1"};
   }
-  
   Simulation::World parameters{side, beta, gamma, theta};
   return parameters;
 }
@@ -70,20 +69,16 @@ int main()
             ++day;  // Variazione del giorno
             Simulation::World next = Simulation::evolve(world);
             Display::print(grid_screen, next);  // Visualizazione delle variazioni graficamente
-
             Simulation::print_terminal(next, day);              // Stampa a terminale
             world_history.push_back(next);                      // Aggiunta al vettore del nuovo stato
             Display::print_graph(graph_screen, world_history);  // Stampa del grafico
-
             world = next;
-
             std::this_thread::sleep_for(std::chrono::milliseconds(sleep_time));
             // Ciclo degli eventi della finestra delle opzioni
             while (opt_screen.pollEvent(event)) {
               if (event.type == sf::Event::Closed) {  // Chiususra della finesta delle opzioni
                 opt_screen.close();
               }
-
               Display::option(world, event, opt_screen);  // Controllo sulla variazione delle opzioni
             }
             // Ciclo di controllo degli eventi della finstra con la griglia
@@ -105,7 +100,6 @@ int main()
           Display::set_status(grid_screen, world, event);  // Funzione che permette di cambiare lo stato di una persona con il mouse
         }
       }
-
       break;
     } catch (std::invalid_argument const& e) {  // Errore dovuto ad un input errato
       std::cerr << "\033[31mInavalid input:\033[0m " << e.what() << '\n';
@@ -120,6 +114,5 @@ int main()
       return EXIT_FAILURE;
     }
   }
-
   return 0;
 }
